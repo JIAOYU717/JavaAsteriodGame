@@ -1,6 +1,8 @@
 package com.example.demo3;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -18,8 +20,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Asteroids extends Application{
     public static void main(String[] args) {
@@ -49,20 +51,8 @@ public class Asteroids extends Application{
         PlayerShip ship = new PlayerShip(800, 600);
 //        Polygons shipThruster = new Polygons(new Double[]{-25.0, 0.0, -12.0, 5.0, -7.0, 0.0, -12.0, -5.0},
 //                Color.YELLOW, Color.RED, 1, 0, ship.getTranslateX(), ship.getTranslateY());
-//        Create an asteroid instance
 
-        Asteroid mediumAsteroid = new Asteroid(100,100, 1.0);
-        root.getChildren().add(mediumAsteroid.getPolygon());
 
-        Asteroid largeAsteroid = new Asteroid(200,300, 2.0);
-        root.getChildren().add(largeAsteroid.getPolygon());
-
-        Asteroid smallAsteroid = new Asteroid(400,600, 0.5);
-        root.getChildren().add(smallAsteroid.getPolygon());
-
-        Bullet bullet = new Bullet(300, 400);
-        root.getChildren().add(bullet.getPolygon());
-        bullet.applyAcceleration(30.0);
 
         //Create Alien spaceship
 //        Polygons alienShipBody = new Polygons(new Double[] {-30.0,0.0,
@@ -81,17 +71,37 @@ public class Asteroids extends Application{
 //                Color.CYAN, Color.WHITE, 1,2);
 
 
-        smallAsteroid.applyAcceleration(0.8);
-        smallAsteroid.rotLeft();
+        List<Asteroid> asteroidList = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            Random random = new Random();
+            List<Double> asteroidSizes = new ArrayList<>();
+            asteroidSizes.add(0.5); //for small asteroid
+            asteroidSizes.add(1.0); //for medium asteroid
+            asteroidSizes.add(2.0); //for large asteroid
+            int randomSize = random.nextInt(3);
+            Asteroid randomAsteroid = new Asteroid(random.nextInt(1280), random.nextInt(832), asteroidSizes.get(randomSize));
+
+            //smaller asteroid need to go faster
+            double asteroidAcceleration;
+            double asteroidScale = randomAsteroid.asteroid.scale;
+            if (asteroidScale == 0.5){
+                asteroidAcceleration = 3;
+            } else if (asteroidScale == 1.0) {
+                asteroidAcceleration = 2;
+            } else {asteroidAcceleration = 1;};
+
+            double asteroidAngle = random.nextFloat(360);
+            randomAsteroid.asteroid.setRotation(asteroidAngle);
+            randomAsteroid.applyAcceleration(asteroidAcceleration);
+            asteroidList.add(randomAsteroid);
+        }
 
 
-        mediumAsteroid.applyAcceleration(0.4);
-        mediumAsteroid.rotLeft();
+        List<Bullet> bulletList = new ArrayList<>();
 
-
-        largeAsteroid.applyAcceleration(0.2);
-        largeAsteroid.rotRight();
-
+        // Hashmaps store items in key-value pairs.
+        // here we keep track of when a key is pressed and when it is released
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
         mainScene.setOnKeyPressed(event -> {
             pressedKeys.put(event.getCode(), Boolean.TRUE);
@@ -113,27 +123,71 @@ public class Asteroids extends Application{
                 }
 
                 if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
-                        ship.applyAcceleration(0.05);
+                    ship.applyAcceleration(0.05);
                 }
-                ship.applyMove(1280,832);
-                smallAsteroid.applyMove(1280,832);
-                mediumAsteroid.applyMove(1280,832);
-                largeAsteroid.applyMove(1280,832);
-                bullet.applyMove(1280, 832);
 
-                if (ship.collision(smallAsteroid)){
-                    stop();
+                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && bulletList.size() < 30) {
+                    Bullet bullet = new Bullet(ship.getPolygon().getTranslateX(), ship.getPolygon().getTranslateY());
+
+                    bullet.bullet.setRotation(ship.getPolygon().getRotate());
+                    bullet.applyAcceleration(10.0);
+                    bulletList.add(bullet);
+                    root.getChildren().add(bullet.getPolygon());
+
+                    Timeline timeToLive = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+                        bulletList.remove(bullet);
+                        root.getChildren().remove(bullet.getPolygon());
+                    }));
+                    timeToLive.play();
+
                 }
-                if (ship.collision(mediumAsteroid)){
-                    stop();
-                }
-                if (ship.collision(largeAsteroid)){
-                    stop();
-                }
+
+                ship.applyMove(1280,832);
+
+                asteroidList.forEach(asteroid -> asteroid.applyMove(1280, 832));
+
+                asteroidList.forEach(asteroid -> {
+
+                    //player is immune for the first 2 seconds, so that if an asteroid
+                    //spawns close to the player, they can move away quickly
+                    Timeline immune = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+                        if (ship.collision(asteroid)) {
+                            stop();
+                        }
+                    }));
+                    immune.play();
+
+                });
+
+                bulletList.forEach(bullet -> {
+                    bullet.applyMove(1280, 832);
+
+                });
+
+                List<Bullet> bulletsToRemove = bulletList.stream().filter(bullet -> {
+                    List<Asteroid> collides = asteroidList.stream().filter(asteroid -> asteroid.collision(bullet))
+                            .collect(Collectors.toList());
+
+                    if (collides.isEmpty()) {
+                        return false;
+                    }
+
+                    collides.stream().forEach(collided -> {
+                        asteroidList.remove(collided);
+                        root.getChildren().remove(collided.getPolygon());
+                    });
+                    return true;
+                }).collect(Collectors.toList());
+
+                bulletsToRemove.forEach(bullet -> {
+                    bulletList.remove(bullet);
+                    root.getChildren().remove(bullet.getPolygon());
+                });
             }
         };
 
         root.getChildren().add(ship.getPolygon());
+        asteroidList.forEach(asteroid -> root.getChildren().add(asteroid.getPolygon()));
         timer.start();
 
         //Show application window

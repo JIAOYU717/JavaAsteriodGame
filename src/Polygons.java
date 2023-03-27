@@ -37,7 +37,6 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.scale = scale;
         this.polygon.setScaleX(this.scale);
         this.polygon.setScaleY(this.scale);
-        this.scale = scale;
         this.radius = this.radius*scale;
         this.polygon.setFill(fillColor);
         this.polygon.setStroke(strokeColor);
