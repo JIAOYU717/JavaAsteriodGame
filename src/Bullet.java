@@ -10,7 +10,7 @@ public class Bullet extends Polygons{
 
     public Polygons bullet;
 
-    public Bullet(int x, int y){
+    public Bullet(double x, double y){
         this.bullet = new Polygons(this.bulletPoints, Color.WHITE, Color.CYAN, 1, x, y);
         this.bullet.setRadius(2);
     }

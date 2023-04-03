@@ -20,12 +20,16 @@ public class Polygons extends javafx.scene.shape.Polygon {
     double radius = 30;
     private Polygon polygon = new Polygon();
 
+    //This variable defines a point in 2D coordinates specified in double precision
     public Point2D move = new Point2D(0,0);
 
     public Polygons(){
 
     }
 
+
+    //For the constructor of a Polygon, we define the vertices,
+    //color, outline color, polygon scale, and x and y positions.
     public Polygons (Double[] points, Color fillColor, Color strokeColor, double scale, double x, double y ) {
         this.polygon.setTranslateX(x);
         this.polygon.setTranslateY(y);
@@ -37,12 +41,12 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.scale = scale;
         this.polygon.setScaleX(this.scale);
         this.polygon.setScaleY(this.scale);
-        this.scale = scale;
         this.radius = this.radius*scale;
         this.polygon.setFill(fillColor);
         this.polygon.setStroke(strokeColor);
     }
 
+    //initially we thought collision detection could be implemented using radius
     public void setRadius(double radius){
         this.radius = radius;
     }
@@ -51,16 +55,24 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.polygon.setTranslateY(y);
     }
 
-    public void rotLeft() {
-        this.polygon.setRotate(this.polygon.getRotate() + 3);
+    public void changeOpacity(double opacity){
+        this.polygon.setOpacity(opacity);
     }
 
-    public void rotRight() {
+    public double getAngle(){
+        return polygon.getRotate();
+    }
+
+    public void rotLeft() {
         this.polygon.setRotate(this.polygon.getRotate() - 3);
     }
 
+    public void rotRight() {
+        this.polygon.setRotate(this.polygon.getRotate() + 3);
+    }
+
     public void setRotation(double angle){
-        this.rotation = angle;
+        this.polygon.setRotate(angle);
     }
 
     public void applyMove( int ScreenWidth, int ScreenHeight ) {
@@ -68,7 +80,7 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.polygon.setTranslateY(this.polygon.getTranslateY() + this.move.getY());
 
         if (this.polygon.getTranslateX() > ScreenWidth+this.radius){
-            this.polygon.setTranslateX(0-this.radius);
+            this.polygon.setTranslateX(-this.radius);
         }
         if (this.polygon.getTranslateX() < - this.radius){
             this.polygon.setTranslateX(ScreenWidth + this.radius);
@@ -88,6 +100,10 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.dvy += dy;
         this.velocity = Math.sqrt(dvx*dvx + dvy*dvy);
         this.move =  this.move.add(dx, dy);
+    }
+
+    public void halt(){
+        this.move = new Point2D(0,0);
     }
 
     public Polygon getPolygon(){
