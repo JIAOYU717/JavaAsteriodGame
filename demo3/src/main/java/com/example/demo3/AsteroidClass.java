@@ -5,6 +5,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
 public class AsteroidClass extends Polygons{
+
     Double[] asteroidPoints = {0.0, -30.0, //for code re-usability it's better to define the points outside
             -20.0, -20.0,
             -30.0, 10.0,
@@ -15,14 +16,21 @@ public class AsteroidClass extends Polygons{
             30.0, 0.0,
             20.0, -20.0};
 
+    //定义这个成员变量的意思是？
     public Polygons asteroid;
 
-    public AsteroidClass(double x, double y, double s){
-        this.asteroid = new Polygons(this.asteroidPoints, Color.GRAY, Color.WHITE, s, x, y);
+    public PolygonType polygonType;
+
+    public AsteroidClass(PolygonType polygonType, double x, double y, double s){
+
+        this.asteroid = new Polygons(this.polygonType,this.asteroidPoints, Color.GRAY, Color.WHITE, s, x, y);
+        this.polygonType = polygonType;
+
     }
     public Polygon getPolygon(){
         return this.asteroid.getPolygon();
     }
+
 
     public void applyAcceleration(double acc){
         this.asteroid.applyAcceleration(acc);

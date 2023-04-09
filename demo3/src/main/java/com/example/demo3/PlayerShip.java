@@ -14,8 +14,8 @@ public class PlayerShip extends Polygons{
     public Polygons thruster;
     boolean alive = true;
 
-    public PlayerShip(double x, double y){
-        this.ship = new Polygons(this.shipPoints, Color.MEDIUMSEAGREEN, Color.YELLOW, 1,  x, y);
+    public PlayerShip(PolygonType polygonType,double x, double y){
+        this.ship = new Polygons(this.polygonType,this.shipPoints, Color.MEDIUMSEAGREEN, Color.YELLOW, 1,  x, y);
         this.ship.setRadius(10);
         this.ship.getPolygon().setOpacity(1);
 //        this.thruster = new Polygons(new Double[]{-25.0, 0.0, -12.0, 5.0, -7.0, 0.0, -12.0, -5.0},

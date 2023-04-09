@@ -2,7 +2,6 @@ package com.example.demo3;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -11,11 +10,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import src.com.example.demo3.TextClass;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,7 +48,7 @@ public class Asteroids extends Application{
 
         //Create the player Ship
 
-        PlayerShip ship = new PlayerShip(600, 400);
+        com.example.demo3.PlayerShip ship = new com.example.demo3.PlayerShip(600, 400);
 //        Polygons shipThruster = new Polygons(new Double[]{-25.0, 0.0, -12.0, 5.0, -7.0, 0.0, -12.0, -5.0},
 //                Color.YELLOW, Color.RED, 1, 0, ship.getTranslateX(), ship.getTranslateY());
 
@@ -73,12 +71,12 @@ public class Asteroids extends Application{
 //                Color.CYAN, Color.WHITE, 1,2);
 
 
-        List<Asteroid> asteroidList = new ArrayList<>();
+        List<com.example.demo3.Asteroid> asteroidList = new ArrayList<>();
 
         Random randomx = new Random();
         Random randomy = new Random();
-        Asteroid LargeAsteroid = new Asteroid(randomx.nextInt(1280),randomy.nextInt(832),2);
-        double asteroidAngle = randomx.nextFloat(360);
+        com.example.demo3.Asteroid LargeAsteroid = new com.example.demo3.Asteroid(randomx.nextInt(1280),randomy.nextInt(832),2);
+        double asteroidAngle = randomx.nextFloat(360.00);
         LargeAsteroid.asteroid.setRotation(asteroidAngle);
         LargeAsteroid.applyAcceleration(1);
         asteroidList.add(LargeAsteroid);
@@ -108,7 +106,7 @@ public class Asteroids extends Application{
 //        }
 
 
-        List<Bullet> bulletList = new ArrayList<>();
+        List<com.example.demo3.Bullet> bulletList = new ArrayList<>();
 
         // Hashmaps store items in key-value pairs.
         // here we keep track of when a key is pressed and when it is released
@@ -164,7 +162,7 @@ public class Asteroids extends Application{
 
                         Random randomx = new Random();
                         Random randomy = new Random();
-                        Asteroid LargeAsteroid = new Asteroid(randomx.nextInt(1280),randomy.nextInt(832),2);
+                        com.example.demo3.Asteroid LargeAsteroid = new com.example.demo3.Asteroid(randomx.nextInt(1280),randomy.nextInt(832),2);
                         LargeAsteroid.applyAcceleration(1);
                         double asteroidAngle = randomx.nextFloat(360);
                         LargeAsteroid.asteroid.getPolygon().setRotate(asteroidAngle);
@@ -202,7 +200,7 @@ public class Asteroids extends Application{
                 mainScene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
                     if (actionToBePerformed.get() == false && keyEvent.getCode() == KeyCode.SPACE && bulletList.size() < 7)
                     {
-                        Bullet bullet = new Bullet(ship.getPolygon().getTranslateX(), ship.getPolygon().getTranslateY());
+                        com.example.demo3.Bullet bullet = new com.example.demo3.Bullet(ship.getPolygon().getTranslateX(), ship.getPolygon().getTranslateY());
                         bullet.bullet.setRotation(ship.getPolygon().getRotate());
                         bullet.applyAcceleration(10.0);
                         bulletList.add(bullet);
@@ -245,8 +243,8 @@ public class Asteroids extends Application{
 
                 });
 
-                List<Bullet> bulletsToRemove = bulletList.stream().filter(bullet -> {
-                    List<Asteroid> collides = asteroidList.stream().filter(asteroid -> asteroid.collision(bullet))
+                List<com.example.demo3.Bullet> bulletsToRemove = bulletList.stream().filter(bullet -> {
+                    List<com.example.demo3.Asteroid> collides = asteroidList.stream().filter(asteroid -> asteroid.collision(bullet))
                             .collect(Collectors.toList());
 
                 if (collides.isEmpty()) {
@@ -261,7 +259,7 @@ public class Asteroids extends Application{
                         score.set(score.get() + 500);
                         genPurText.setText("Score: " + score);
                         for (int i = 0; i < 2; i++) {
-                            Asteroid mediumAsteroid = new Asteroid(collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 1);
+                            com.example.demo3.Asteroid mediumAsteroid = new com.example.demo3.Asteroid(collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 1);
                             double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
                             mediumAsteroid.asteroid.setRotation(asteroidAngle);
                             mediumAsteroid.applyAcceleration(2);
@@ -273,7 +271,7 @@ public class Asteroids extends Application{
                         score.set(score.get() + 750);
                         genPurText.setText("Score: " + score);
                         for (int i = 0; i < 2; i++) {
-                            Asteroid smallAsteroid = new Asteroid(collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 0.5);
+                            com.example.demo3.Asteroid smallAsteroid = new com.example.demo3.Asteroid(collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 0.5);
                             double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
                             smallAsteroid.asteroid.setRotation(asteroidAngle);
                             smallAsteroid.applyAcceleration(2);

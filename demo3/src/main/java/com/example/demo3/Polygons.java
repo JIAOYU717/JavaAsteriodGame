@@ -8,10 +8,24 @@ import javafx.scene.shape.Shape;
 
 public class Polygons extends javafx.scene.shape.Polygon {
 
+    //枚举类定定义写在这里比较好？
+    public enum PolygonType {
+        Player_SHIP,
+        LARGE_ASTEROID,
+        MEDIUM_ASTEROID,
+        SMALL_ASTEROID,
+        ALIEN_SHIP,
+        BULLET,
+        ALIEN_BULLET
+    }
+// 这里定义了子类就不用定义了？？
+   public PolygonType polygonType;
+
     public double rotation;
     Double[] points;
 
     double scale = 1;
+    public boolean alive ;
 
     public double velocity = 0;
     double dvx = 0;
@@ -30,7 +44,7 @@ public class Polygons extends javafx.scene.shape.Polygon {
 
     //For the constructor of a Polygon, we define the vertices,
     //color, outline color, polygon scale, and x and y positions.
-    public Polygons (Double[] points, Color fillColor, Color strokeColor, double scale, double x, double y ) {
+    public Polygons (PolygonType polygonType,Double[] points, Color fillColor, Color strokeColor, double scale, double x, double y ) {
         this.polygon.setTranslateX(x);
         this.polygon.setTranslateY(y);
         this.move = new Point2D(0, 0);
@@ -44,6 +58,8 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.radius = this.radius*scale;
         this.polygon.setFill(fillColor);
         this.polygon.setStroke(strokeColor);
+        this.polygonType = polygonType;
+        this.alive=true;
     }
 
     //initially we thought collision detection could be implemented using radius
@@ -105,6 +121,12 @@ public class Polygons extends javafx.scene.shape.Polygon {
     public void halt(){
         this.move = new Point2D(0,0);
     }
+
+    // 想一下这里为什么写this.alive 而不是 this.polygon.alive
+    public boolean getAlive(){
+        return this.alive;
+    }
+
 
     public Polygon getPolygon(){
         return polygon;

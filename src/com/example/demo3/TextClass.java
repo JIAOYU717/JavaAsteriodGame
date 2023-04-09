@@ -1,4 +1,4 @@
-package com.example.demo3;
+package src.com.example.demo3;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;

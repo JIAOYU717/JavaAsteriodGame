@@ -1,4 +1,4 @@
-package com.example.demo3;
+package src.com.example.demo3;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
