@@ -102,8 +102,7 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.move =  this.move.add(dx, dy);
     }
 
-    public void halt(){
-        this.move = new Point2D(0,0);
+    public void halt(){this.move = new Point2D(0,0);
     }
 
     public Polygon getPolygon(){

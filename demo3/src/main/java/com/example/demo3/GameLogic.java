@@ -19,7 +19,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class GameLogic extends Application{
+public class GameLogic
+//        extends Application
+{
     public void start(Stage mainStage) //'mainStage' is the application window.
     {
         mainStage.setTitle("Asteroids"); //title of the application window.
@@ -82,6 +84,7 @@ public class GameLogic extends Application{
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
 
         AtomicBoolean actionToBePerformed = new AtomicBoolean(false);
+        AtomicBoolean didHyperJump = new AtomicBoolean(false);
 
         mainScene.setOnKeyPressed(event -> {
             pressedKeys.put(event.getCode(), Boolean.TRUE);
@@ -89,6 +92,9 @@ public class GameLogic extends Application{
         mainScene.setOnKeyReleased(event -> {
             pressedKeys.put(event.getCode(), Boolean.FALSE);
         });
+
+        TextClass noOfAsteroids = new TextClass("No. of asteroids:", 30, 80, Color.WHITE, 30);
+        root.getChildren().add(noOfAsteroids.mytext);
 
         TextClass youDiedText = new TextClass("YOU DIED", 575, 380, Color.WHITE, 40);
         root.getChildren().add(youDiedText.mytext);
@@ -107,18 +113,30 @@ public class GameLogic extends Application{
         gameOver.mytext.setOpacity(0);
         root.getChildren().add(gameOver.mytext);
 
+        TextClass noOfHyperjumps = new TextClass("Hyper jump available!", 850, 90, Color.WHITE, 20);
+        noOfHyperjumps.mytext.setOpacity(0);
+        root.getChildren().add(noOfHyperjumps.mytext);
+
+        AtomicBoolean replenishedLife = new AtomicBoolean(false);
+
         AnimationTimer timer = new AnimationTimer() {
 
             @Override
             public void handle(long l) {
                 level.SetText("Level " + gameLevel.get());
-
+                noOfAsteroids.SetText("No. of asteroids: " + asteroidList.size());
                 if(noOfLives.size() == 0){
                     gameOver.mytext.setOpacity(1);
                 }
 
+                if (!didHyperJump.get()) {
+                    noOfHyperjumps.mytext.setOpacity(1);
+                } else {noOfHyperjumps.mytext.setOpacity(0);}
+
                 if (asteroidList.isEmpty()){
                     gameLevel.set(gameLevel.get() + 1);
+                    didHyperJump.set(false);
+                    replenishedLife.set(false);
 
                     for (int j = 0; j < gameLevel.get(); j++)
                     {
@@ -167,6 +185,7 @@ public class GameLogic extends Application{
                     youDiedText.mytext.setOpacity(1);
                 } else {youDiedText.mytext.setOpacity(0);}
 
+
                 if (pressedKeys.getOrDefault(KeyCode.ENTER, false) && !ship.isAlive() && noOfLives.size() != 0) {
                     ship.ship.getPolygon().setTranslateX(600);
                     ship.ship.getPolygon().setTranslateY(400);
@@ -176,16 +195,34 @@ public class GameLogic extends Application{
                     root.getChildren().add(ship.getPolygon());
                     root.getChildren().remove(youDiedText);
                 }
+
+                if (!replenishedLife.get() && pressedKeys.getOrDefault(KeyCode.L, false) && ship.isAlive() && noOfLives.size() < 3 && score.get() >= 10000) {
+                    if (noOfLives.size() == 1){
+                        PlayerShip life = new PlayerShip(900 + 50 * 1, 40);
+                        life.ship.setRotation(-90);
+                        noOfLives.add(life);
+                        root.getChildren().add(life.getPolygon());
+                        replenishedLife.set(true);}
+                    else {
+                        PlayerShip life = new PlayerShip(900 + 50 * 2, 40);
+                        life.ship.setRotation(-90);
+                        noOfLives.add(life);
+                        root.getChildren().add(life.getPolygon());
+                        replenishedLife.set(true);
+                    }
+                    score.set(score.get() - 10000);
+                }
+
                 if (pressedKeys.getOrDefault(KeyCode.LEFT, false) && ship.isAlive()) {
                     ship.rotLeft();
                 }
                 if (pressedKeys.getOrDefault(KeyCode.RIGHT, false) && ship.isAlive()) {
                     ship.rotRight();
                 }
-                if (pressedKeys.getOrDefault(KeyCode.C, false) && ship.isAlive()) {
+                if (pressedKeys.getOrDefault(KeyCode.C, false) && ship.isAlive() && !didHyperJump.get()) {
                     ship.hyperjump();
+                    didHyperJump.set(true);
                     asteroidList.forEach(asteroid -> {
-
                         //player is immune for the first 2 seconds, so that if an asteroid
                         //spawns close to the player, they can move away quickly
                         Timeline immune = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
@@ -198,9 +235,12 @@ public class GameLogic extends Application{
                     });
                 };
 
+
                 if (pressedKeys.getOrDefault(KeyCode.UP, false) && ship.isAlive()) {
                     ship.applyAcceleration(0.06);
-                }
+//                    ship.showThruster();
+                };
+
                 mainScene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
                     if (!actionToBePerformed.get()  && keyEvent.getCode() == KeyCode.SPACE && bulletList.size() < 7 &&ship.isAlive())
                     {
@@ -236,10 +276,8 @@ public class GameLogic extends Application{
 //                            noOfLives.forEach(life -> root.getChildren().remove(life.getPolygon()));
                             root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
                             noOfLives.remove(noOfLives.get(noOfLives.size()-1));
-
-
-                            ship.alive = false;
                             root.getChildren().remove(ship.getPolygon());
+                            ship.alive = false;
                         }
                     }));
                     immune.play();
@@ -291,7 +329,6 @@ public class GameLogic extends Application{
                         });
                 return true;
                 }).toList();
-//                        collect(Collectors.toList());
                 bulletsToRemove.forEach(bullet -> {
                     bulletList.remove(bullet);
                     root.getChildren().remove(bullet.getPolygon());
@@ -302,7 +339,6 @@ public class GameLogic extends Application{
         root.getChildren().add(ship.getPolygon());
         asteroidList.forEach(asteroid -> root.getChildren().add(asteroid.getPolygon()));
         timer.start();
-        //Show application window
         mainStage.show();
     }
 }

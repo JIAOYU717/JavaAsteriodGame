@@ -1,6 +1,7 @@
 package com.example.demo3;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
@@ -12,14 +13,16 @@ public class PlayerShip extends Polygons{
     public Polygons ship;
 
     public Polygons thruster;
+
     boolean alive = true;
 
     public PlayerShip(double x, double y){
-        this.ship = new Polygons(this.shipPoints, Color.MEDIUMSEAGREEN, Color.YELLOW, 1,  x, y);
+        this.ship = new Polygons(this.shipPoints, Color.TRANSPARENT, Color.YELLOW, 1,  x, y);
         this.ship.setRadius(10);
         this.ship.getPolygon().setOpacity(1);
-//        this.thruster = new Polygons(new Double[]{-25.0, 0.0, -12.0, 5.0, -7.0, 0.0, -12.0, -5.0},
-//                Color.YELLOW, Color.RED, 1, 500, 600);
+
+        this.thruster = new Polygons(new Double[]{-25.0, 0.0, -12.0, 5.0, -7.0, 0.0, -12.0, -5.0},
+                Color.YELLOW, Color.RED, 1, 500, 600);
 
     }
 
@@ -28,15 +31,16 @@ public class PlayerShip extends Polygons{
     }
 
 //    public void showThruster(){
-//        this.thruster.getPolygon().setRotate(this.ship.getPolygon().getRotate());
-//        this.thruster.getPolygon().setTranslateX(this.ship.getPolygon().getTranslateX());
-//        this.thruster.getPolygon().setTranslateY(this.ship.getPolygon().getTranslateY());
-//        this.thruster.getPolygon().setOpacity(1);
+//        this.ship.getPolygon().getPoints().removeAll();
+//        this.ship.getPolygon().getPoints().addAll(new Double[]{15.0, 0.0, -15.0, 10.0, -10.0, 5.0, -25.0, 0.0, -10.0, -5.0, -15.0, -10.0});
 //    }
 //
-//    public Polygon getThruster(){
-//        return this.thruster.getPolygon();
+//    public void removeThruster(){
+//        this.ship.getPolygon().getPoints().removeAll();
+//        this.ship.getPolygon().getPoints().addAll(this.shipPoints);
+//
 //    }
+
 
     public void changeOpacity(double opacity){this.ship.getPolygon().setOpacity(opacity);}
 

@@ -30,7 +30,6 @@ public class AsteroidsGame extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-
         showMainMenu();
     }
 
@@ -142,7 +141,6 @@ public class AsteroidsGame extends Application {
     }
 
     private void showGame() {
-//        new GameScreen(primaryStage);
         new GameLogic().start(primaryStage);
     }
 }
