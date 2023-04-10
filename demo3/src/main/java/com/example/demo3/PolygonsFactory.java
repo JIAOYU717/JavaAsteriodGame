@@ -2,6 +2,8 @@ package com.example.demo3;
 
 import javafx.scene.shape.Polygon;
 
+import java.util.Random;
+
 
 public class PolygonsFactory {
 
@@ -12,7 +14,8 @@ public class PolygonsFactory {
         double medium_asteroid_size = 1.0;
         double small_asteroid_size = 0.5;
         double alien_ship_size = 1.0;
-
+//        Random randomBorder = new Random();
+//        Random randomx = new Random();
 
         switch (polygonType) {
 
@@ -35,7 +38,6 @@ public class PolygonsFactory {
             case SMALL_ASTEROID:
                 original_x = x;
                 original_y = y;
-
                 return new AsteroidClass (polygonType,original_x,original_y,small_asteroid_size);
 
             case ALIEN_SHIP:

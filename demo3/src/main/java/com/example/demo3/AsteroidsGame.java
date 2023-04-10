@@ -142,8 +142,6 @@ public class AsteroidsGame extends Application {
     }
 
 
-
-
     private void showGame() {
 //        new GameScreen(primaryStage);
         new GameLogic().start(primaryStage);

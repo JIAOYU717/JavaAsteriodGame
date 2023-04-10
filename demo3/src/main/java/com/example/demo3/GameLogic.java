@@ -14,6 +14,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+
+import java.util.concurrent.atomic.AtomicInteger;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +28,11 @@ public class GameLogic extends Application{
      public PlayerShip ship;
      public PlayerShip life;
 
+     public AsteroidClass asteroids;
+
      public AlienShip alien;
+
+     public boolean alienremoved = false;
 
      public List<AsteroidClass> asteroidList;
      public List<Bullet> bulletList;
@@ -33,9 +40,11 @@ public class GameLogic extends Application{
 
      public List<AlienBullet> alienBulletList;
 
-     public List<AlienShip> alienShipList;
+
+     public List<Polygons> polygonsList;
 
      public long AlienBullettime = 0;
+     public int alienAppearFlag=0;
 
 
 
@@ -131,6 +140,10 @@ public class GameLogic extends Application{
     }
 
 
+
+
+
+
     public void start(Stage mainStage) //'mainStage' is the application window.
     {
         mainStage.setTitle("Asteroids"); //title of the application window.
@@ -146,8 +159,8 @@ public class GameLogic extends Application{
 
         //Make a list that contain ass the Asteroids
         asteroidList = new ArrayList<>();
-
-        asteroidList.add(createLargeAsteroid ());
+        asteroids=createLargeAsteroid ();
+        asteroidList.add(asteroids);
 
         bulletList = new ArrayList<>();
 
@@ -155,11 +168,11 @@ public class GameLogic extends Application{
 
         alienBulletList = new ArrayList<>();
 
-        alienShipList = new ArrayList<>();
 
-        alienShipList.add(createAlienShip());
+        alien=createAlienShip();
 
 
+        polygonsList = new ArrayList<>();
 
 
 
@@ -188,8 +201,8 @@ public class GameLogic extends Application{
 
 
         TextClass youDiedText = new TextClass("YOU DIED，press ENTER to revive", 575, 380, Color.WHITE, 40);
-        root.getChildren().add(youDiedText.mytext);
 
+        root.getChildren().add(youDiedText.mytext);
 
         AtomicInteger score = new AtomicInteger(0);
 
@@ -207,7 +220,6 @@ public class GameLogic extends Application{
 
 
 
-
         AnimationTimer timer = new AnimationTimer() {
 
             @Override
@@ -216,63 +228,69 @@ public class GameLogic extends Application{
 
                 if (noOfLives.size() == 0) {
                     gameOver.mytext.setOpacity(1);
+                    root.getChildren().remove(ship.getPolygon());
+                }
+
+                if ((gameLevel.get() == 100)){
+                    gameOver.mytext.setOpacity(1);
                 }
 
                 //下面是每个level初始化的逻辑，可以考虑抽象出来，不必要
+                // 增加游戏最多一百关的逻辑和事件（可以是game complete 区别于game over，先用game over 有时间再加不一样的）
 
-                if (asteroidList.isEmpty()) {
+                if (asteroidList.isEmpty() && alienremoved==true) {
                     gameLevel.set(gameLevel.get() + 1);
 
+                    bulletList.clear();
+                    alienBulletList.clear();
+
+                    // 添加游戏事件 LEVEL_COMPLETED ，
 
                     for (int j = 0; j < gameLevel.get(); j++) {
-                        asteroidList.add(createLargeAsteroid());
-                        alien = createAlienShip();
-                        alienShipList.add(alien);
+                        asteroids=createLargeAsteroid();
+                        asteroidList.add(asteroids);
                     }
-                    alienShipList.forEach(alienship -> root.getChildren().add(alienship.getPolygon()));
+
+                    alien = createAlienShip();
+                    alienremoved= false;
+                    alienAppearFlag=0;
 
                     asteroidList.forEach(asteroid -> {
-                        // applyMove 方法可以全部摘出来，asteroid.applyMove方法重复，这里删除
-//                        asteroid.applyMove(1280, 832);
+                        // applyMove 方法可以全部摘出来
+                        asteroid.applyMove(1280, 832);
                         root.getChildren().add(asteroid.getPolygon());
-                        //这里不需要冲突检测， 而且，这个是每个level初始化
-                        if (ship.collision(asteroid) && noOfLives.size() != 0) {
-
-                            ship.alive = false;
-                            //remove life rather than ship here or the game will be stop
-                            root.getChildren().remove(ship.getPolygon());
-                        }
                     });
                 }
 
-                Timeline alienShipShow = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
 
-                    alienShipList.forEach(alien -> root.getChildren().add(alien.getPolygon()));
+//Although I added a if statement, but This method will throw a background error of "add duplicate children" during the game runtime,
+// it doesn't affect the game's operation.
+
+                Timeline alienShipShow = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
+                    if (!root.getChildren().contains(alien.getPolygon())&& alienAppearFlag==0&& alienremoved==false ) {
+                         root.getChildren().add(alien.getPolygon());
+                        alienAppearFlag=1;
+                    }
+
                 }));
                 alienShipShow.play();
 
 
+                if (alienAppearFlag==1 && alienremoved==false && System.currentTimeMillis()-AlienBullettime > 2000 ){
 
+                    AlienBullet alienbullet = (AlienBullet) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_BULLET, alien.getPolygon().getTranslateX(), alien.getPolygon().getTranslateY());
+                    alienbullet.setRotation(alien.getPolygon().getRotate());
+                    alienbullet.applyAcceleration(10.0);
+                    alienBulletList.add(alienbullet);
+                    root.getChildren().add(alienbullet.getPolygon());
+                    AlienBullettime = System.currentTimeMillis();
 
-//                if (alien.getAlive()==true && System.currentTimeMillis()-AlienBullettime > 2000 ){
-//
-//                    AlienBullet alienbullet = (AlienBullet) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_BULLET, alien.getPolygon().getTranslateX(), alien.getPolygon().getTranslateY());
-//                    alienbullet.setRotation(alien.getPolygon().getRotate());
-//                    alienbullet.applyAcceleration(10.0);
-//                    alienBulletList.add(alienbullet);
-//
-//                    root.getChildren().add(alienbullet.getPolygon());
-//
-//                    AlienBullettime = System.currentTimeMillis();
-//
-//                }
-
-
-
-
-
-
-//                alienShipList.forEach(alienship -> root.getChildren().add(alienship.getPolygon()));
+                    Timeline alienBulletRemove = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+                        alienBulletList.remove(alienbullet);
+                        root.getChildren().remove(alienbullet.getPolygon());
+                    }));
+                    alienBulletRemove.play();
+                }
 
 
 
@@ -293,6 +311,8 @@ public class GameLogic extends Application{
                         noOfLives.remove(noOfLives.size() - 1);
                         root.getChildren().add(ship.getPolygon());
                         root.getChildren().remove(life.getPolygon());
+                        life=noOfLives.get(noOfLives.size() - 1);
+
                         root.getChildren().remove(youDiedText);
                     }
                     if (pressedKeys.getOrDefault(KeyCode.LEFT, false) && ship.isAlive()) {
@@ -319,7 +339,6 @@ public class GameLogic extends Application{
                     }
                     ;
 
-//&& ship.isAlive 是否冗余，尝试删除项目中的冗余代码
 
                     if (pressedKeys.getOrDefault(KeyCode.UP, false) && ship.isAlive()) {
                         ship.applyAcceleration(0.06);
@@ -337,8 +356,6 @@ public class GameLogic extends Application{
                             bulletList.add(bullet);
                             root.getChildren().add(bullet.getPolygon());
 
-
-
                             Timeline timeToLive = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
                                 bulletList.remove(bullet);
                                 root.getChildren().remove(bullet.getPolygon());
@@ -354,39 +371,121 @@ public class GameLogic extends Application{
                         }
                     });
 
-
 //更新所有成员位置，单独写成一个方法
 
                     ship.applyMove(1280, 832);
 
                     asteroidList.forEach(asteroid -> asteroid.applyMove(1280, 832));
+                    if (alien!= null){
+                        alien.applyMove(1280, 832);
+                    }
 
-                    asteroidList.forEach(asteroid -> {
+                    alienBulletList.forEach(alienBullet -> {
+                        alienBullet.applyMove(1280, 832);
+                    });
 
+                    // I was planning consolidate the collision detection method below, current version has some redundancy
+                // ,but doing so would require merging some array lists,
+                // and the resulting method was resource-intensive, causing a serious drop in frame rate. So, I've put that on hold for now.
+//                    polygonsList.addAll(alienShipList);
+//                    polygonsList.addAll(alienBulletList);
+//                    polygonsList.addAll(asteroidList);
+
+
+                    asteroidList.forEach(asteroids -> {
+
+                        if (ship.collision(asteroids) && noOfLives.size() != 0) {
+                            ship.alive = false;
+                            //remove life rather than ship here or the game will be stop
+                            root.getChildren().remove(ship.getPolygon());
+                        }
                         //player is immune for the first 2 seconds, so that if an asteroid
+
                         //spawns close to the player, they can move away quickly
                         Timeline immune = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
-                            if (ship.isAlive() && ship.collision(asteroid)) {
-//                            noOfLives.forEach(life -> root.getChildren().remove(life.getPolygon()));
+                            if (!(noOfLives.size() == 1) && ship.isAlive() && ship.collision(asteroids)) {
+    //                            noOfLives.forEach(life -> root.getChildren().remove(life.getPolygon()));
+    //                                root.getChildren().remove(noOfLives.get(noOfLives.size() - 1).getPolygon());
+    //                                noOfLives.remove(noOfLives.get(noOfLives.size() - 1));
+                                ship.alive = false;
+                                root.getChildren().remove(ship.getPolygon());
+                            } else if ( (noOfLives.size() == 1) && ship.isAlive() && ship.collision(asteroids)) {
                                 root.getChildren().remove(noOfLives.get(noOfLives.size() - 1).getPolygon());
                                 noOfLives.remove(noOfLives.get(noOfLives.size() - 1));
                                 ship.alive = false;
+                                root.getChildren().remove(life.getPolygon());
                                 root.getChildren().remove(ship.getPolygon());
+
                             }
+
                         }));
                         immune.play();
                     });
 
-                     alienShipList.forEach(alienship -> alienship.applyMove(1280, 832));
+                    if (!(noOfLives.size() == 1) && ship.isAlive() && alien !=null &&ship.collision(alien)) {
+//                            noOfLives.forEach(life -> root.getChildren().remove(life.getPolygon()));
+//                                root.getChildren().remove(noOfLives.get(noOfLives.size() - 1).getPolygon());
+//                                noOfLives.remove(noOfLives.get(noOfLives.size() - 1));
+                        ship.alive = false;
+                        root.getChildren().remove(ship.getPolygon());
+                    } else if ( (noOfLives.size() == 1) && ship.isAlive()&& alien !=null  && ship.collision(alien)) {
+                        root.getChildren().remove(noOfLives.get(noOfLives.size() - 1).getPolygon());
+                        noOfLives.remove(noOfLives.get(noOfLives.size() - 1));
+                        ship.alive = false;
+                        root.getChildren().remove(life.getPolygon());
+                        root.getChildren().remove(ship.getPolygon());
+
+                    }
 
 
-                    bulletList.forEach(bullet -> {
-                        bullet.applyMove(1280, 832);
+                alienBulletList.forEach(alienbullet -> {
+                    if (!(noOfLives.size() == 1) && ship.isAlive() && ship.collision(alienbullet)) {
+//                            noOfLives.forEach(life -> root.getChildren().remove(life.getPolygon()));
+//                                root.getChildren().remove(noOfLives.get(noOfLives.size() - 1).getPolygon());
+//                                noOfLives.remove(noOfLives.get(noOfLives.size() - 1));
+                        ship.alive = false;
+                        root.getChildren().remove(ship.getPolygon());
+                    } else if ( (noOfLives.size() == 1) && ship.isAlive() && ship.collision(alienbullet)) {
+                        root.getChildren().remove(noOfLives.get(noOfLives.size() - 1).getPolygon());
+                        noOfLives.remove(noOfLives.get(noOfLives.size() - 1));
+                        ship.alive = false;
+                        root.getChildren().remove(life.getPolygon());
+                        root.getChildren().remove(ship.getPolygon());
 
-                    });
+                    }
 
+                });
 
-                    List<Bullet> bulletsToRemove = bulletList.stream().filter(bullet -> {
+                bulletList.forEach(bullet -> {
+                    bullet.applyMove(1280, 832);
+                });
+
+//                bulletList.forEach(bullet -> {
+//                    if (ship.isAlive() && alien.collision(bullet)) {
+//                        bulletList.remove(bullet);
+//                        root.getChildren().remove(bullet.getPolygon());
+//                        alienAppearFlag = 0;
+//                        root.getChildren().remove(alien.getPolygon());
+//                        score.set(score.get() + 5000);
+//                        scoreText.SetText("Score: " + score);
+//                    }
+//
+//                    });
+
+                Iterator<Bullet> bulletIterator = bulletList.iterator();
+                while (bulletIterator.hasNext()) {
+                    Bullet bullet = bulletIterator.next();
+                    if (ship.isAlive() && alien.collision(bullet)) {
+                        bulletIterator.remove(); //  use Iterator to delete element safer
+                        root.getChildren().remove(bullet.getPolygon());
+                        root.getChildren().remove(alien.getPolygon());
+                        alienremoved= true;
+                        score.set(score.get() + 5000);
+                        scoreText.SetText("Score: " + score);
+                    }
+                }
+
+                List<Bullet> bulletsToRemove = bulletList.stream().filter(bullet -> {
 //                    List<AsteroidClass> collides = asteroidList.stream().filter(asteroid -> asteroid.collision(bullet)).toList();
                         List<AsteroidClass> collides = asteroidList.stream()
                                 .filter(asteroid -> asteroid.collision(bullet))
@@ -394,7 +493,6 @@ public class GameLogic extends Application{
 //                            collect(Collectors.toList());
 
                         if (collides.isEmpty()) {
-                            //这个return false 和下面的 return true 是干什么的？？？
                             return false;
                         }
 //
@@ -418,15 +516,16 @@ public class GameLogic extends Application{
                             }
 
 
-
                             else if (collided.polygonType == Polygons.PolygonType.MEDIUM_ASTEROID) {
                                 score.set(score.get() + 750);
                                 scoreText.SetText("Score: " + score);
                                 for (int i = 0; i < 2; i++) {
 //                            AsteroidClass smallAsteroid = new AsteroidClass(collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 0.5);
                                     AsteroidClass smallAsteroid = (AsteroidClass) PolygonsFactory.createEntity(Polygons.PolygonType.SMALL_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY());
+                                    //-90 * i +一个0到90的随机数
                                     double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
                                     smallAsteroid.asteroid.setRotation(asteroidAngle);
+                                    //2+一个0-2的随机double
                                     smallAsteroid.applyAcceleration(3);
 
                                     asteroidList.add(smallAsteroid);
@@ -444,7 +543,8 @@ public class GameLogic extends Application{
                         bulletList.remove(bullet);
                         root.getChildren().remove(bullet.getPolygon());
                     });
-                }
+
+            }
             };
 
 

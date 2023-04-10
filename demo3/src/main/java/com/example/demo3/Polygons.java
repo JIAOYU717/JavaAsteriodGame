@@ -8,7 +8,6 @@ import javafx.scene.shape.Shape;
 
 public class Polygons extends javafx.scene.shape.Polygon {
 
-    //枚举类定定义写在这里比较好？
     public enum PolygonType {
         Player_SHIP,
         LARGE_ASTEROID,
@@ -18,7 +17,7 @@ public class Polygons extends javafx.scene.shape.Polygon {
         BULLET,
         ALIEN_BULLET
     }
-// 这里定义了子类就不用定义了？？
+
    public PolygonType polygonType;
 
     public double rotation;
@@ -126,7 +125,6 @@ public class Polygons extends javafx.scene.shape.Polygon {
     public boolean getAlive(){
         return this.alive;
     }
-
 
     public Polygon getPolygon(){
         return polygon;
