@@ -1,9 +1,12 @@
 package com.example.demo3;
 
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -31,6 +34,8 @@ public class GameLogic extends Application{
      public AsteroidClass asteroids;
 
      public AlienShip alien;
+
+//     public boolean gameoverFlag = false;
 
      public boolean alienremoved = false;
 
@@ -153,6 +158,10 @@ public class GameLogic extends Application{
         mainStage.setWidth(1280); //width when not in fullscreen mode
         mainStage.setScene(mainScene);
 
+        Group secondroot = new Group();
+        Scene secondScene = new Scene(secondroot, 1280, 832, Color.RED);
+
+
         //Make player ship that is controllable by the player
 //        ship = new PlayerShip(600, 400);
         ship = (PlayerShip) PolygonsFactory.createEntity(Polygons.PolygonType.Player_SHIP,600, 400);
@@ -173,6 +182,8 @@ public class GameLogic extends Application{
 
 
         polygonsList = new ArrayList<>();
+
+
 
 
 
@@ -220,6 +231,7 @@ public class GameLogic extends Application{
 
 
 
+
         AnimationTimer timer = new AnimationTimer() {
 
             @Override
@@ -229,7 +241,16 @@ public class GameLogic extends Application{
                 if (noOfLives.size() == 0) {
                     gameOver.mytext.setOpacity(1);
                     root.getChildren().remove(ship.getPolygon());
+                    this.stop();
+
+                    mainStage.setScene(secondScene);
                 }
+//
+//                if (gameoverFlag==true){
+//                    mainStage.setScene(secondScene);
+//                    mainStage.show();
+//
+//                }
 
                 if ((gameLevel.get() == 100)){
                     gameOver.mytext.setOpacity(1);
@@ -551,6 +572,16 @@ public class GameLogic extends Application{
 
         root.getChildren().add(ship.getPolygon());
         asteroidList.forEach(asteroid -> root.getChildren().add(asteroid.getPolygon()));
+//        timer.statusProperty().addListener(new ChangeListener<Animation.Status>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Animation.Status> observable, Animation.Status oldValue, Animation.Status newValue) {
+//                if (newValue == Animation.Status.STOPPED) {
+//                    System.out.println("Animation has stopped.");
+//                    // Switch to the new scene
+//                    mainStage.setScene(secondScene);
+//                }
+//            }
+//        }
 
         timer.start();
         //Show application window

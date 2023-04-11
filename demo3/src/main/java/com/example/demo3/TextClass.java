@@ -45,9 +45,9 @@ public class TextClass extends Text {
         this.mytext.setFont(new Font(size));
 
 
-        // Initialize the score and gameLevel here
-        score = new AtomicInteger(0);
-        gameLevel = new AtomicInteger(1);
+//        // Initialize the score and gameLevel here
+//        score = new AtomicInteger(0);
+//        gameLevel = new AtomicInteger(1);
 
     }
 
