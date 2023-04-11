@@ -17,8 +17,10 @@ public class AsteroidClass extends Polygons{
 
     public Polygons asteroid;
 
-    public AsteroidClass(double x, double y, double s){
-        this.asteroid = new Polygons(this.asteroidPoints, Color.GRAY, Color.WHITE, s, x, y);
+    public PolygonType polygonType;
+    public AsteroidClass(PolygonType polygonType, double x, double y, double s){
+        this.polygonType = polygonType;
+        this.asteroid = new Polygons(this.polygonType, this.asteroidPoints, Color.GRAY, Color.WHITE, s, x, y);
     }
     public Polygon getPolygon(){
         return this.asteroid.getPolygon();

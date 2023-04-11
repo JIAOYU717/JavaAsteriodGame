@@ -8,6 +8,19 @@ import javafx.scene.shape.Shape;
 
 public class Polygons extends javafx.scene.shape.Polygon {
 
+    public enum PolygonType {
+        Player_SHIP,
+        LARGE_ASTEROID,
+        MEDIUM_ASTEROID,
+        SMALL_ASTEROID,
+        ALIEN_SHIP,
+        BULLET,
+        ALIEN_BULLET
+    }
+
+    public boolean alive;
+    public PolygonType polygonType;
+
     public double rotation;
     Double[] points;
 
@@ -30,7 +43,7 @@ public class Polygons extends javafx.scene.shape.Polygon {
 
     //For the constructor of a Polygon, we define the vertices,
     //color, outline color, polygon scale, and x and y positions.
-    public Polygons (Double[] points, Color fillColor, Color strokeColor, double scale, double x, double y ) {
+    public Polygons (PolygonType polygonType, Double[] points, Color fillColor, Color strokeColor, double scale, double x, double y ) {
         this.polygon.setTranslateX(x);
         this.polygon.setTranslateY(y);
         this.move = new Point2D(0, 0);
@@ -44,6 +57,7 @@ public class Polygons extends javafx.scene.shape.Polygon {
         this.radius = this.radius*scale;
         this.polygon.setFill(fillColor);
         this.polygon.setStroke(strokeColor);
+        this.polygonType = polygonType;
     }
 
     //initially we thought collision detection could be implemented using radius

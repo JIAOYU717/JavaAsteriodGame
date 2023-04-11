@@ -9,9 +9,8 @@ public class Bullet extends Polygons{
     Double[] bulletPoints = {2.0,0.0,0.0,2.0,-2.0,0.0,0.0,-2.0};
 
     public Polygons bullet;
-
-    public Bullet(double x, double y){
-        this.bullet = new Polygons(this.bulletPoints, Color.WHITE, Color.CYAN, 1, x, y);
+    public Bullet(PolygonType polygonType, double x, double y){
+        this.bullet = new Polygons(polygonType, this.bulletPoints, Color.WHITE, Color.CYAN, 1, x, y);
         this.bullet.setRadius(2);
     }
 
