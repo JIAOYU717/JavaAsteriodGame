@@ -1,23 +1,24 @@
 package com.example.demo3;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
 public class PlayerShip extends Polygons{
 
     Double[] shipPoints =  {15.0, 0.0, -15.0, 10.0, -5.0, 0.0, -15.0, -10.0};
     public Polygons ship;
-
     public Polygons thruster;
-
     boolean alive = true;
-
+    boolean immune = false;
     public PlayerShip(PolygonType polygonType, double x, double y){
-        this.ship = new Polygons(polygonType, this.shipPoints, Color.GREEN, Color.YELLOW, 1,  x, y);
+        this.ship = new Polygons(polygonType, this.shipPoints, Color.TRANSPARENT, Color.YELLOW, 1,  x, y);
         this.ship.setRadius(10);
         this.ship.getPolygon().setOpacity(1);
 
@@ -63,4 +64,26 @@ public class PlayerShip extends Polygons{
         this.getPolygon().setTranslateY(randomY);
         this.ship.halt();
     }
+    public void setImmune(boolean immune) {
+        this.immune = immune;
+
+        if (immune) {
+            Timeline immunity = new Timeline(
+                    new KeyFrame(Duration.seconds(0.10), event -> this.getPolygon().setFill(Color.YELLOW)),
+                    new KeyFrame(Duration.seconds(0.20), event -> this.getPolygon().setFill(Color.TRANSPARENT))
+            );
+            // Immune for 5 seconds, each cycle is 0.2 seconds. Can change
+            immunity.setCycleCount(25);
+            immunity.setOnFinished(event -> this.immune = false);
+            immunity.play();
+        } else {
+            this.getPolygon().setFill(Color.TRANSPARENT);
+        }
+    }
+
+    public boolean isImmune() {
+        return immune;
+    }
 }
+
+

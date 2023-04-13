@@ -23,9 +23,13 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 
+
 public class AsteroidsGame extends Application {
     private Stage primaryStage;
     private TextField playerNameField;
+
+
+
 
     public GameLogic gameLoop = new GameLogic();
 
@@ -47,6 +51,8 @@ public class AsteroidsGame extends Application {
 
         Button startButton = new Button("Start");
         startButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        Button controlsButton = new Button("Controls");
+        controlsButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         Button highScoresButton = new Button("High Scores");
         highScoresButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         Button exitButton = new Button("Exit");
@@ -54,6 +60,10 @@ public class AsteroidsGame extends Application {
 
         startButton.setOnAction(event -> {
             showEnterNameScreen();
+        });
+
+        controlsButton.setOnAction(event -> {
+            showControlsScreen();
         });
 
         highScoresButton.setOnAction(event -> {
@@ -65,7 +75,7 @@ public class AsteroidsGame extends Application {
         });
 
         VBox menuLayout = new VBox(10);
-        menuLayout.getChildren().addAll(title, startButton, highScoresButton, exitButton);
+        menuLayout.getChildren().addAll(title, startButton, controlsButton, highScoresButton, exitButton);
         menuLayout.setAlignment(Pos.CENTER);
         menuLayout.setStyle("-fx-background-color: #000000;");
 
@@ -75,6 +85,47 @@ public class AsteroidsGame extends Application {
         primaryStage.show();
     }
 
+    private void showControlsScreen() {
+        Label controlsLabel = new Label("Controls\n");
+        controlsLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 48));
+        controlsLabel.setTextFill(Color.WHITE);
+
+        Label controlsText = new Label("The aim of the game is to avoid Asteroids and survive as long " +
+                "as possible in a series of increasingly difficult levels!\n\n" +
+                "LEFT ARROW KEY: Press the left arrow key to rotate the ship anti-clockwise.\n\n" +
+                "RIGHT ARROW KEY: Press the right arrow key to rotate the ship clockwise.\n\n" +
+                "UP ARROW KEY: Press the up arrow key to apply thrust and move forward.\n\n" +
+                "SPACE: Press the space bar to shoot at enemies.\n\n" +
+                "C KEY: Press the C key to perform a hyperjump, which randomly teleports you and provides brief immunity.\n\n" +
+                "L KEY: Press the L key to spend 10,000 points and replenish a life.\n\n\n\n");
+        controlsText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        controlsText.setTextFill(Color.WHITE);
+
+        Button startButton = new Button("Start Game");
+        startButton.setFont(Font.font("Arial", FontWeight.BOLD, 26));
+        startButton.setOnAction(event -> {
+            showEnterNameScreen();
+        });
+
+        Button backButton = new Button("Back to Main Menu");
+        backButton.setFont(Font.font("Arial", FontWeight.BOLD, 26));
+        backButton.setOnAction(event -> {
+            showMainMenu();
+        });
+
+        VBox buttonLayout = new VBox(20);
+        buttonLayout.getChildren().addAll(startButton, backButton);
+        buttonLayout.setAlignment(Pos.CENTER);
+
+        VBox controlsLayout = new VBox(10);
+        controlsLayout.getChildren().addAll(controlsLabel, controlsText, buttonLayout);
+        controlsLayout.setAlignment(Pos.CENTER);
+        controlsLayout.setStyle("-fx-background-color: #000000;");
+
+        Scene controlsScene = new Scene(controlsLayout, 1280, 832);
+        primaryStage.setScene(controlsScene);
+        primaryStage.setTitle("Controls");
+    }
     private void showHighScores() {
 
         List<String> highScores = readHighScores("high_scores.txt");
@@ -147,6 +198,8 @@ public class AsteroidsGame extends Application {
         primaryStage.setScene(enterNameScene);
         primaryStage.setTitle("Enter Your Name");
     }
+
+
 
     private void showGame() {
         gameLoop.start(primaryStage);

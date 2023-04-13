@@ -22,14 +22,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class GameLogic
-//        extends Application
+        //extends Application
 {
     public PlayerShip ship;
     public PlayerShip life;
     public AlienShip alien;
 
     public Group root;
-
 
     public Map<KeyCode, Boolean> pressedKeys;
 
@@ -38,6 +37,7 @@ public class GameLogic
     public List<AlienBullet> alienBulletList;
 
     public List<PlayerShip> noOfLives;
+
 
     public AlienShip createAlienShip ()
     {
@@ -188,7 +188,7 @@ public class GameLogic
         root.getChildren().add(noOfHyperjumps.mytext);
 
         AtomicBoolean replenishedLife = new AtomicBoolean(false);
-        AtomicBoolean immunity = new AtomicBoolean(false);
+        //AtomicBoolean immunity = new AtomicBoolean(false);
 
 
         timer = new AnimationTimer() {
@@ -262,9 +262,10 @@ public class GameLogic
                     youDiedText.mytext.setOpacity(1);
                 } else {youDiedText.mytext.setOpacity(0);}
 
-                if (immunity.get() == true){
-                    ship.getPolygon().setOpacity(0.5);
-                } else {ship.getPolygon().setOpacity(1);}
+                //if (immunity.get() == true){
+                //    ship.getPolygon().setOpacity(0.5);
+                //} else {ship.getPolygon().setOpacity(1);}
+
 
 
                 if (pressedKeys.getOrDefault(KeyCode.ENTER, false) && !ship.isAlive() && noOfLives.size() != 0) {
@@ -275,13 +276,7 @@ public class GameLogic
                     ship.alive = true;
                     root.getChildren().add(ship.getPolygon());
                     root.getChildren().remove(youDiedText);
-                    immunity.set(true);
-                    //player is immune for the first 2 seconds, so that if an asteroid
-                    //spawns close to the player, they can move away quickly
-                    Timeline immune = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
-                        immunity.set(false);
-                    }));
-                    immune.play();
+                    ship.setImmune(true);
                 }
 
                 if (!replenishedLife.get() && pressedKeys.getOrDefault(KeyCode.L, false) && ship.isAlive() && noOfLives.size() < 3 && score.get() >= 10000) {
@@ -310,13 +305,7 @@ public class GameLogic
                 if (pressedKeys.getOrDefault(KeyCode.C, false) && ship.isAlive() && !didHyperJump.get()) {
                     ship.hyperjump();
                     didHyperJump.set(true);
-                    immunity.set(true);
-                        //player is immune for the first 2 seconds, so that if an asteroid
-                        //spawns close to the player, they can move away quickly
-                        Timeline immune = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
-                                immunity.set(false);
-                        }));
-                        immune.play();
+                    ship.setImmune(true);
                 };
 
 
@@ -354,13 +343,11 @@ public class GameLogic
                 asteroidList.forEach(asteroid -> asteroid.applyMove(1280, 832));
                 asteroidList.forEach(asteroid -> {
 
-                    if (immunity.get() == false){
-                        if (ship.isAlive() && ship.collision(asteroid)) {
+                        if (!ship.isImmune() && ship.isAlive() && ship.collision(asteroid)) {
                             root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
                             noOfLives.remove(noOfLives.get(noOfLives.size()-1));
                             root.getChildren().remove(ship.getPolygon());
                             ship.alive = false;
-                    };
                 }});
                 bulletList.forEach(bullet -> {
                     bullet.applyMove(1280, 832);
@@ -418,6 +405,7 @@ public class GameLogic
         root.getChildren().add(ship.getPolygon());
         asteroidList.forEach(asteroid -> root.getChildren().add(asteroid.getPolygon()));
         timer.start();
+        ship.setImmune(true); //Immune when game first starts
         mainStage.show();
     }
 }
