@@ -266,7 +266,11 @@ public class GameLogic
                 //    ship.getPolygon().setOpacity(0.5);
                 //} else {ship.getPolygon().setOpacity(1);}
 
-
+                if (pressedKeys.getOrDefault(KeyCode.ENTER, false) && !ship.isAlive() && noOfLives.size() == 0){
+                    timer.stop();
+                    AsteroidsGame game = AsteroidsGame.getInstance();
+                    game.showHighScores();
+                }
 
                 if (pressedKeys.getOrDefault(KeyCode.ENTER, false) && !ship.isAlive() && noOfLives.size() != 0) {
                     ship.ship.getPolygon().setTranslateX(600);
@@ -343,12 +347,12 @@ public class GameLogic
                 asteroidList.forEach(asteroid -> asteroid.applyMove(1280, 832));
                 asteroidList.forEach(asteroid -> {
 
-                        if (!ship.isImmune() && ship.isAlive() && ship.collision(asteroid)) {
-                            root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
-                            noOfLives.remove(noOfLives.get(noOfLives.size()-1));
-                            root.getChildren().remove(ship.getPolygon());
-                            ship.alive = false;
-                }});
+                    if (!ship.isImmune() && ship.isAlive() && ship.collision(asteroid)) {
+                        root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
+                        noOfLives.remove(noOfLives.get(noOfLives.size()-1));
+                        root.getChildren().remove(ship.getPolygon());
+                        ship.alive = false;
+                    }});
                 bulletList.forEach(bullet -> {
                     bullet.applyMove(1280, 832);
 
@@ -357,43 +361,43 @@ public class GameLogic
                     List<AsteroidClass> collides = asteroidList.stream().filter(asteroid -> asteroid.collision(bullet))
                             .toList();
 
-                if (collides.isEmpty()) {
-                    return false;
-                }
+                    if (collides.isEmpty()) {
+                        return false;
+                    }
 
-                collides.stream().forEach(collided -> {
-                    asteroidList.remove(collided);
-                    root.getChildren().remove(collided.getPolygon());
+                    collides.stream().forEach(collided -> {
+                        asteroidList.remove(collided);
+                        root.getChildren().remove(collided.getPolygon());
 
-                    if (collided.asteroid.scale == 2.0) {
-                        score.set(score.get() + 500);
-                        scoreText.SetText("Score: " + score);
-                        for (int i = 0; i < 2; i++) {
-                            AsteroidClass mediumAsteroid = new AsteroidClass(Polygons.PolygonType.MEDIUM_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 1);
-                            double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
-                            mediumAsteroid.asteroid.setRotation(asteroidAngle);
-                            mediumAsteroid.applyAcceleration(2);
-                            asteroidList.add(mediumAsteroid);
-                            root.getChildren().add(mediumAsteroid.getPolygon());
-                        }}
+                        if (collided.asteroid.scale == 2.0) {
+                            score.set(score.get() + 500);
+                            scoreText.SetText("Score: " + score);
+                            for (int i = 0; i < 2; i++) {
+                                AsteroidClass mediumAsteroid = new AsteroidClass(Polygons.PolygonType.MEDIUM_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 1);
+                                double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
+                                mediumAsteroid.asteroid.setRotation(asteroidAngle);
+                                mediumAsteroid.applyAcceleration(2);
+                                asteroidList.add(mediumAsteroid);
+                                root.getChildren().add(mediumAsteroid.getPolygon());
+                            }}
 
-                    else if (collided.asteroid.scale == 1.0) {
-                        score.set(score.get() + 750);
-                        scoreText.SetText("Score: " + score);
-                        for (int i = 0; i < 2; i++) {
-                            AsteroidClass smallAsteroid = new AsteroidClass(Polygons.PolygonType.SMALL_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 0.5);
-                            double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
-                            smallAsteroid.asteroid.setRotation(asteroidAngle);
-                            smallAsteroid.applyAcceleration(2);
-                            asteroidList.add(smallAsteroid);
-                            root.getChildren().add(smallAsteroid.getPolygon());
-                        }
+                        else if (collided.asteroid.scale == 1.0) {
+                            score.set(score.get() + 750);
+                            scoreText.SetText("Score: " + score);
+                            for (int i = 0; i < 2; i++) {
+                                AsteroidClass smallAsteroid = new AsteroidClass(Polygons.PolygonType.SMALL_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 0.5);
+                                double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
+                                smallAsteroid.asteroid.setRotation(asteroidAngle);
+                                smallAsteroid.applyAcceleration(2);
+                                asteroidList.add(smallAsteroid);
+                                root.getChildren().add(smallAsteroid.getPolygon());
+                            }
                         } else {
                             score.set(score.get() + 1000);
                             scoreText.SetText("Score: " + score);
                         }
-                        });
-                return true;
+                    });
+                    return true;
                 }).toList();
                 bulletsToRemove.forEach(bullet -> {
                     bulletList.remove(bullet);

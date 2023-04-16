@@ -25,9 +25,15 @@ import javafx.util.Duration;
 
 
 public class AsteroidsGame extends Application {
-    private Stage primaryStage;
+    static Stage primaryStage;
     private TextField playerNameField;
 
+
+    // Static variable to create only one instance
+    private static AsteroidsGame instance = new AsteroidsGame();
+    public static AsteroidsGame getInstance() {
+        return instance;
+    }
 
 
 
@@ -126,7 +132,7 @@ public class AsteroidsGame extends Application {
         primaryStage.setScene(controlsScene);
         primaryStage.setTitle("Controls");
     }
-    private void showHighScores() {
+    void showHighScores() {
 
         List<String> highScores = readHighScores("high_scores.txt");
 
