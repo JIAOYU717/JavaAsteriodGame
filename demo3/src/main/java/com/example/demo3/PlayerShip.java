@@ -5,6 +5,9 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import javafx.scene.transform.Rotate;
 
 public class PlayerShip extends Polygons{
@@ -12,8 +15,7 @@ public class PlayerShip extends Polygons{
     Double[] shipPoints =  {15.0, 0.0, -15.0, 10.0, -5.0, 0.0, -15.0, -10.0};
     public Polygons ship;
 
-    public Polygons thruster;
-
+    boolean immune = false;
     boolean alive = true;
 
     public PlayerShip(PolygonType polygonType, double x, double y){
@@ -62,5 +64,22 @@ public class PlayerShip extends Polygons{
         this.getPolygon().setTranslateX(randomX);
         this.getPolygon().setTranslateY(randomY);
         this.ship.halt();
+    }
+
+    public void setImmune(boolean immune) {
+        this.immune = immune;
+
+        if (immune) {
+            Timeline immunity = new Timeline(
+                    new KeyFrame(Duration.seconds(0.10), event -> this.getPolygon().setFill(Color.YELLOW)),
+                    new KeyFrame(Duration.seconds(0.20), event -> this.getPolygon().setFill(Color.GREEN))
+            );
+            // Immune for 5 seconds, each cycle is 0.2 seconds. Can change
+            immunity.setCycleCount(10); //the value here times 0.2 is the duration of flashing
+            immunity.setOnFinished(event -> this.immune = false);
+            immunity.play();
+        } else {
+            this.getPolygon().setFill(Color.GREEN);
+        }
     }
 }

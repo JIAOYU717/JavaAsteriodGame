@@ -24,13 +24,19 @@ import java.util.stream.Collectors;
 public class GameLogic
 //        extends Application
 {
+    public Scene mainScene;
     public PlayerShip ship;
     public PlayerShip life;
     public AlienShip alien;
 
     public Group root;
 
+    public AsteroidClass asteroids;
 
+    public boolean alienremoved = false;
+
+    public int alienAppearFlag = 0;
+    public long AlienBullettime = 0;
     public Map<KeyCode, Boolean> pressedKeys;
 
     public List<AlienShip> alienShipList;
@@ -38,6 +44,53 @@ public class GameLogic
     public List<AlienBullet> alienBulletList;
 
     public List<PlayerShip> noOfLives;
+
+    public List<AsteroidClass> asteroidList;
+
+    public List<Bullet> bulletList;
+
+    public AsteroidClass createLargeAsteroid ()
+    {
+        AsteroidClass LargeAsteroid = null;
+        double positionx;
+        double positiony;
+        //Generate initial random asteroid
+        Random randomBorder = new Random();
+        Random randomx = new Random();
+        Random randomy = new Random();
+        int spawnSide = randomBorder.nextInt(4) + 1;
+        if(spawnSide == 1){
+            positionx = randomx.nextInt(60) - 60 ;
+            positiony =  randomy.nextInt(832);
+            LargeAsteroid  = (AsteroidClass) PolygonsFactory.createEntity(Polygons.PolygonType.LARGE_ASTEROID,positionx, positiony);
+            double asteroidAngle = randomx.nextDouble() * 360;
+            LargeAsteroid.asteroid.setRotation(asteroidAngle);
+            LargeAsteroid.applyAcceleration(1);
+        } else if(spawnSide == 2){
+            positionx = randomx.nextInt(1280);
+            positiony = randomy.nextInt(60) + 832;
+            LargeAsteroid  = (AsteroidClass) PolygonsFactory.createEntity(Polygons.PolygonType.LARGE_ASTEROID,positionx, positiony);
+            double asteroidAngle = randomx.nextDouble() * 360;
+            LargeAsteroid.asteroid.setRotation(asteroidAngle);
+            LargeAsteroid.applyAcceleration(1);
+        } else if(spawnSide == 3){
+            positionx = randomx.nextInt(60) + 1280;
+            positiony = randomy.nextInt(832);
+            LargeAsteroid  = (AsteroidClass) PolygonsFactory.createEntity(Polygons.PolygonType.LARGE_ASTEROID,positionx, positiony);
+            double asteroidAngle = randomx.nextDouble() * 360;
+            LargeAsteroid.asteroid.setRotation(asteroidAngle);
+            LargeAsteroid.applyAcceleration(1);
+        } else if(spawnSide == 4){
+            positionx = randomx.nextInt(1280);
+            positiony = randomy.nextInt(60) - 60;
+            LargeAsteroid  = (AsteroidClass) PolygonsFactory.createEntity(Polygons.PolygonType.LARGE_ASTEROID,positionx, positiony);
+            double asteroidAngle = randomx.nextDouble() * 360;
+            LargeAsteroid.asteroid.setRotation(asteroidAngle);
+            LargeAsteroid.applyAcceleration(1);
+
+        }
+        return LargeAsteroid;
+    }
 
     public AlienShip createAlienShip ()
     {
@@ -55,28 +108,28 @@ public class GameLogic
             alienShip  = (AlienShip) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_SHIP,positionx, positiony);
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
-            alienShip.applyAcceleration(2);
+            alienShip.applyAcceleration(1);
         } else if(spawnSide == 2){
             positionx = randomx.nextInt(1280);
             positiony = randomy.nextInt(60) + 832;
             alienShip  = (AlienShip) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_SHIP,positionx, positiony);
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
-            alienShip.applyAcceleration(2);
+            alienShip.applyAcceleration(1);
         } else if(spawnSide == 3){
             positionx = randomx.nextInt(60) + 1280;
             positiony = randomy.nextInt(832);
             alienShip  = (AlienShip) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_SHIP,positionx, positiony);
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
-            alienShip.applyAcceleration(2);
+            alienShip.applyAcceleration(1);
         } else if(spawnSide == 4){
             positionx = randomx.nextInt(1280);
             positiony = randomy.nextInt(60) - 60;
             alienShip  = (AlienShip) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_SHIP,positionx, positiony);
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
-            alienShip.applyAcceleration(2);
+            alienShip.applyAcceleration(1);
 
         }
         return alienShip;
@@ -84,63 +137,38 @@ public class GameLogic
 
     private AnimationTimer timer;
 
-    public void start(Stage mainStage) //'mainStage' is the application window.
+    public Scene start(
+//            Stage mainStage
+    ) //'mainStage' is the application window.
     {
-        mainStage.setTitle("Asteroids"); //title of the application window.
+//        mainStage.setTitle("Asteroids"); //title of the application window.
         root = new Group();
-        Scene mainScene = new Scene(root, 1280, 832, Color.BLACK); //a drawing surface
-        mainStage.setHeight(832); //height when not in fullscreen mode
-        mainStage.setWidth(1280); //width when not in fullscreen mode
-        mainStage.setScene(mainScene);
+        this.mainScene = new Scene(root, 1280, 832, Color.BLACK); //a drawing surface
+//        mainStage.setHeight(832); //height when not in fullscreen mode
+//        mainStage.setWidth(1280); //width when not in fullscreen mode
+//        mainStage.setScene(mainScene);
 
         //Make player ship that is controllable by the player
         ship = (PlayerShip) PolygonsFactory.createEntity(Polygons.PolygonType.Player_SHIP, 600, 400);
-//        PlayerShip ship = new PlayerShip(600, 400);
 
+        asteroidList = new ArrayList<>();
+        asteroids = createLargeAsteroid();
+        asteroidList.add(asteroids);
+
+
+        alien = createAlienShip();
         alienShipList = new ArrayList<>();
-        alienShipList.add(createAlienShip());
+        alienShipList.add(alien);
+
+        alienBulletList = new ArrayList<>();
 
 
-        //Make a list that contain ass the Asteroids
-        List<AsteroidClass> asteroidList = new ArrayList<>();
 
-        //Generate initial random asteroid
-        Random randomBorder = new Random();
-        Random randomx = new Random();
-        Random randomy = new Random();
-        int spawnSide = randomBorder.nextInt(4) + 1;
-        if(spawnSide == 1){
-            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID, randomx.nextInt(60) - 60, randomy.nextInt(832),2);
-            double asteroidAngle = randomx.nextFloat(360);
-            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-            LargeAsteroid.applyAcceleration(1);
-            asteroidList.add(LargeAsteroid);
-        } else if(spawnSide == 2){
-            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID, randomx.nextInt(1280), randomy.nextInt(60) + 832,2);
-            double asteroidAngle = randomx.nextFloat(360);
-            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-            LargeAsteroid.applyAcceleration(1);
-            asteroidList.add(LargeAsteroid);
-        } else if(spawnSide == 3){
-            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID, randomx.nextInt(60) + 1280, randomy.nextInt(832),2);
-            double asteroidAngle = randomx.nextFloat(360);
-            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-            LargeAsteroid.applyAcceleration(1);
-            asteroidList.add(LargeAsteroid);
-        } else if(spawnSide == 4){
-            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID,  randomx.nextInt(1280), randomy.nextInt(60) - 60,2);
-            double asteroidAngle = randomx.nextFloat(360);
-            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-            LargeAsteroid.applyAcceleration(1);
-            asteroidList.add(LargeAsteroid);
-        }
-
-
-        List<Bullet> bulletList = new ArrayList<>();
+        bulletList = new ArrayList<>();
 
         noOfLives = new ArrayList<>();
         for (int i = 0; i < 3; i++){
-            PlayerShip life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 900 + 50 * i, 40);
+            life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 900 + 50 * i, 40);
             life.ship.setRotation(-90);
             noOfLives.add(life);
             root.getChildren().add(life.getPolygon());
@@ -188,6 +216,7 @@ public class GameLogic
         root.getChildren().add(noOfHyperjumps.mytext);
 
         AtomicBoolean replenishedLife = new AtomicBoolean(false);
+
         AtomicBoolean immunity = new AtomicBoolean(false);
 
 
@@ -198,7 +227,7 @@ public class GameLogic
 //                debugText.SetText("No. of alienships " + alienShipList.size());
                 level.SetText("Level " + gameLevel.get());
                 noOfAsteroids.SetText("No. of asteroids: " + asteroidList.size());
-                if(noOfLives.size() == 0){
+                if (noOfLives.size() == 0){
                     gameOver.mytext.setOpacity(1);
                 }
 
@@ -206,56 +235,59 @@ public class GameLogic
                     noOfHyperjumps.mytext.setOpacity(1);
                 } else {noOfHyperjumps.mytext.setOpacity(0);}
 
-                if (asteroidList.isEmpty()){
+                if (asteroidList.isEmpty()
+                        && alienShipList.isEmpty()
+                ){
                     gameLevel.set(gameLevel.get() + 1);
+//                    bulletList.clear();
+//                    alienBulletList.clear();
                     didHyperJump.set(false);
                     replenishedLife.set(false);
 
                     for (int j = 0; j < gameLevel.get(); j++)
-                    {
-                        alienShipList.add(alien);
-
-
-                        Random randomBorder = new Random();
-                        Random randomx = new Random();
-                        Random randomy = new Random();
-                        int spawnSide = randomBorder.nextInt(4) + 1;
-                        if(spawnSide == 1){
-                            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID, randomx.nextInt(60) - 60, randomy.nextInt(832),2);
-                            double asteroidAngle = randomx.nextFloat(360);
-                            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-                            LargeAsteroid.applyAcceleration(1.0);
-                            asteroidList.add(LargeAsteroid);
-                        } else if(spawnSide == 2){
-                            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID, randomx.nextInt(1280), randomy.nextInt(60) + 832,2);
-                            double asteroidAngle = randomx.nextFloat(360);
-                            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-                            LargeAsteroid.applyAcceleration(1.0);
-                            asteroidList.add(LargeAsteroid);
-                        } else if(spawnSide == 3){
-                            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID, randomx.nextInt(60) + 1280, randomy.nextInt(832),2);
-                            double asteroidAngle = randomx.nextFloat(360);
-                            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-                            LargeAsteroid.applyAcceleration(1.0);
-                            asteroidList.add(LargeAsteroid);
-                        } else {
-                            AsteroidClass LargeAsteroid = new AsteroidClass(Polygons.PolygonType.LARGE_ASTEROID, randomx.nextInt(1280), randomy.nextInt(60) - 60,2);
-                            double asteroidAngle = randomx.nextFloat(360);
-                            LargeAsteroid.asteroid.setRotation(asteroidAngle);
-                            LargeAsteroid.applyAcceleration(1.0);
-                            asteroidList.add(LargeAsteroid);
-                        }
+                    {   asteroids = createLargeAsteroid();
+                        asteroidList.add(asteroids);
                     }
+
+                    alien = createAlienShip();
+                    alienShipList.add(alien);
+                    alienremoved = false;
+                    alienAppearFlag = 0;
+
 
                     asteroidList.forEach(asteroid -> {
                         asteroid.applyMove(1280, 832);
                         root.getChildren().add(asteroid.getPolygon());
-                        if (ship.collision(asteroid) && ship.isAlive()) {
-                            ship.alive = false;
-                            root.getChildren().remove(ship.getPolygon());
-                        }
                     });
                 }
+
+                Timeline alienShipShow = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+                    if (!root.getChildren().contains(alien.getPolygon()) && alienAppearFlag==0 && alienremoved == false ){
+                        root.getChildren().add(alien.getPolygon());
+                        alienAppearFlag = 1;
+                    }
+                }));
+                alienShipShow.play();
+
+                if (alienAppearFlag==1 && alien.getAlive() && alienremoved==false && System.currentTimeMillis()-AlienBullettime > 2000 ){
+                    AlienBullet alienbullet = (AlienBullet) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_BULLET, alien.getPolygon().getTranslateX(), alien.getPolygon().getTranslateY());
+                    double angle = Math.toDegrees(Math.atan((ship.getPolygon().getTranslateY() - alien.getPolygon().getTranslateY())/
+                            (ship.getPolygon().getTranslateX() - alien.getPolygon().getTranslateX())));
+                    System.out.println("angle: "+ angle);
+                    alienbullet.getPolygon().setRotate(angle);
+
+                    alienbullet.applyAcceleration(7.0);
+                    alienBulletList.add(alienbullet);
+                    root.getChildren().add(alienbullet.getPolygon());
+                    AlienBullettime = System.currentTimeMillis();
+
+                    Timeline alienBulletRemove = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+                        alienBulletList.remove(alienbullet);
+                        root.getChildren().remove(alienbullet.getPolygon());
+                    }));
+                    alienBulletRemove.play();
+                }
+
 
                 if(!ship.alive && noOfLives.size() != 0)
                 {
@@ -299,6 +331,7 @@ public class GameLogic
                         replenishedLife.set(true);
                     }
                     score.set(score.get() - 10000);
+                    scoreText.SetText("Score: " + score.get());
                 }
 
                 if (pressedKeys.getOrDefault(KeyCode.LEFT, false) && ship.isAlive()) {
@@ -318,7 +351,6 @@ public class GameLogic
                         }));
                         immune.play();
                 };
-
 
 
                 if (pressedKeys.getOrDefault(KeyCode.UP, false) && ship.isAlive()) {
@@ -351,8 +383,40 @@ public class GameLogic
                 });
 
                 ship.applyMove(1280,832);
-                asteroidList.forEach(asteroid -> asteroid.applyMove(1280, 832));
+
+                alienShipList.forEach(alienShip -> {
+                    if (!immunity.get()){
+                        if(ship.isAlive() && ship.collision(alienShip)){
+                            root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
+                            noOfLives.remove(noOfLives.get(noOfLives.size()-1));
+                            root.getChildren().remove(ship.getPolygon());
+                            ship.alive = false;
+                        }
+                    }
+                });
+
                 asteroidList.forEach(asteroid -> {
+                    asteroid.applyMove(1280, 832);
+                    if(alien!=null){
+                        alien.applyMove(1280, 832);
+                    }
+
+                    alienBulletList.forEach(alienbullet -> {
+                        if (!immunity.get() && !(noOfLives.size() == 1) && ship.isAlive() && ship.collision(alienbullet)) {
+                            root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
+                            noOfLives.remove(noOfLives.get(noOfLives.size()-1));
+                            root.getChildren().remove(ship.getPolygon());
+                            ship.alive = false;
+                            root.getChildren().remove(ship.getPolygon());
+                        } else if (!immunity.get() && (noOfLives.size() == 1) && ship.isAlive() && ship.collision(alienbullet)) {
+                            root.getChildren().remove(noOfLives.get(noOfLives.size() - 1).getPolygon());
+                            noOfLives.remove(noOfLives.get(noOfLives.size() - 1));
+                            ship.alive = false;
+                            root.getChildren().remove(life.getPolygon());
+                            root.getChildren().remove(ship.getPolygon());
+
+                        }});
+
 
                     if (immunity.get() == false){
                         if (ship.isAlive() && ship.collision(asteroid)) {
@@ -362,9 +426,12 @@ public class GameLogic
                             ship.alive = false;
                     };
                 }});
+                alienBulletList.forEach(alienbullet -> {
+                    alienbullet.applyMove(1280, 832);
+                });
+
                 bulletList.forEach(bullet -> {
                     bullet.applyMove(1280, 832);
-
                 });
                 List<Bullet> bulletsToRemove = bulletList.stream().filter(bullet -> {
                     List<AsteroidClass> collides = asteroidList.stream().filter(asteroid -> asteroid.collision(bullet))
@@ -412,12 +479,35 @@ public class GameLogic
                     bulletList.remove(bullet);
                     root.getChildren().remove(bullet.getPolygon());
                 });
+
+
+                List<Bullet> bulletsToRemoveDueToAlienShip = bulletList.stream().filter(bullet -> {
+                    List<AlienShip> collidesWithAlien = alienShipList.stream().filter(alien -> alien.collision(bullet))
+                            .toList();
+
+                    if (collidesWithAlien.isEmpty()) {
+                        return false;
+                    }
+
+                    collidesWithAlien.stream().forEach(collided -> {
+                        alienShipList.remove(collided);
+                        collided.alive = false;
+                        root.getChildren().remove(collided.getPolygon());
+                    });
+                    return true;
+                }).toList();
+                bulletsToRemoveDueToAlienShip.forEach(bullet -> {
+                    bulletList.remove(bullet);
+                    root.getChildren().remove(bullet.getPolygon());
+                });
             }
         };
 
         root.getChildren().add(ship.getPolygon());
         asteroidList.forEach(asteroid -> root.getChildren().add(asteroid.getPolygon()));
         timer.start();
-        mainStage.show();
+//        mainStage.show();
+    return mainScene;
     }
+
 }
