@@ -4,6 +4,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
+import java.util.Random;
+
 public class AsteroidClass extends Polygons{
     Double[] asteroidPoints = {0.0, -30.0, //for code re-usability it's better to define the points outside
             -20.0, -20.0,
@@ -11,17 +13,32 @@ public class AsteroidClass extends Polygons{
             0.0, 30.0,
             30.0, 20.0,
             30.0, 10.0,
-            10.0, 10.0,
-            30.0, 0.0,
+            35.0, 0.0,
             20.0, -20.0};
 
     public Polygons asteroid;
 
     public PolygonType polygonType;
+
     public AsteroidClass(PolygonType polygonType, double x, double y, double s){
+
         this.polygonType = polygonType;
-        this.asteroid = new Polygons(this.polygonType, this.asteroidPoints, Color.GRAY, Color.WHITE, s, x, y);
+        Random rand = new Random();
+        int error;
+        for (int i = 0; i < asteroidPoints.length; i++) {
+            if(rand.nextBoolean()) {
+                error = -1;
+            }
+            else{
+                error = 1;
+            }
+            double replacement = asteroidPoints[i]+ 5 * error;
+            asteroidPoints[i]=replacement;
+
+        }
+        this.asteroid = new Polygons(this.polygonType, this.asteroidPoints, Color.GRAY, Color.TRANSPARENT, s, x, y);
     }
+
     public Polygon getPolygon(){
         return this.asteroid.getPolygon();
     }

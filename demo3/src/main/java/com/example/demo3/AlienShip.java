@@ -16,8 +16,18 @@ import java.util.Random;
 
 public class AlienShip extends Polygons {
 
-    //形状和角度很奇怪。
-    Double[] alienShipPoints = {0.0,-5.0,30.0, 5.0,45.0, 5.0, 75.0,-5.0, 60.0,-15.0, 45.0,-15.0, 45.0,-22.5, 30.0,-22.5, 30.0,-15.0, 15.0,-15.0};
+    Double[] alienShipPoints = {0.0,0.0,
+            16.0, 10.0,
+            20.0, 10.0,
+            26.0, 18.0,
+            44.0, 18.0,
+            50.0, 10.0,
+            54.0, 10.5,
+            70.0, 0.0,
+            50.0, 0.0,
+            44.0, -4.0,
+            26.0, -4.0,
+            20.0, 0.0};
 
 
     public Polygons alienship;
@@ -25,7 +35,7 @@ public class AlienShip extends Polygons {
     public boolean alive = true;
 
     public AlienShip(PolygonType polygonType,double x, double y, double s){
-        this.alienship = new Polygons(polygonType, this.alienShipPoints, Color.TRANSPARENT.brighter(), Color.WHITE, s, x, y);
+        this.alienship = new Polygons(polygonType, this.alienShipPoints, Color.ORANGE.brighter(), Color.TRANSPARENT, s, x, y);
         this.polygonType=polygonType;
 
     }

@@ -78,11 +78,11 @@ public class Polygons extends javafx.scene.shape.Polygon {
     }
 
     public void rotLeft() {
-        this.polygon.setRotate(this.polygon.getRotate() - 3);
+        this.polygon.setRotate(this.polygon.getRotate() - 4);
     }
 
     public void rotRight() {
-        this.polygon.setRotate(this.polygon.getRotate() + 3);
+        this.polygon.setRotate(this.polygon.getRotate() + 4);
     }
 
     public void setRotation(double angle){

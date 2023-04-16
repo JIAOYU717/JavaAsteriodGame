@@ -315,9 +315,9 @@ public class AsteroidsGame extends Application {
         primaryStage.setScene(enterNameScene);
         primaryStage.setTitle("Enter Your Name");
     }
-
     public void startGameLoop()
     {
+        primaryStage.setTitle("Asteroids");
         root = new Group();
         mainScene.setRoot(root);
         //Make player ship that is controllable by the player
@@ -327,9 +327,8 @@ public class AsteroidsGame extends Application {
         asteroids = createLargeAsteroid();
         asteroidList.add(asteroids);
 
-
-        alien = createAlienShip();
         alienShipList = new ArrayList<>();
+        alien = createAlienShip();
         alienShipList.add(alien);
 
         alienBulletList = new ArrayList<>();
