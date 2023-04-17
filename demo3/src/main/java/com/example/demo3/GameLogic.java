@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class GameLogic
-//        extends Application
 {
     public Scene mainScene;
     public PlayerShip ship;
@@ -137,16 +136,11 @@ public class GameLogic
 
     private AnimationTimer timer;
 
-    public Scene start(
-//            Stage mainStage
-    ) //'mainStage' is the application window.
+    public Scene start(Stage mainStage)
     {
-//        mainStage.setTitle("Asteroids"); //title of the application window.
         root = new Group();
         this.mainScene = new Scene(root, 1280, 832, Color.BLACK); //a drawing surface
-//        mainStage.setHeight(832); //height when not in fullscreen mode
-//        mainStage.setWidth(1280); //width when not in fullscreen mode
-//        mainStage.setScene(mainScene);
+        mainStage.setScene(mainScene);
 
         //Make player ship that is controllable by the player
         ship = (PlayerShip) PolygonsFactory.createEntity(Polygons.PolygonType.Player_SHIP, 600, 400);
@@ -161,8 +155,6 @@ public class GameLogic
         alienShipList.add(alien);
 
         alienBulletList = new ArrayList<>();
-
-
 
         bulletList = new ArrayList<>();
 
@@ -239,8 +231,7 @@ public class GameLogic
                         && alienShipList.isEmpty()
                 ){
                     gameLevel.set(gameLevel.get() + 1);
-//                    bulletList.clear();
-//                    alienBulletList.clear();
+
                     didHyperJump.set(false);
                     replenishedLife.set(false);
 
@@ -298,6 +289,11 @@ public class GameLogic
                     ship.getPolygon().setOpacity(0.5);
                 } else {ship.getPolygon().setOpacity(1);}
 
+                if (pressedKeys.getOrDefault(KeyCode.ENTER, false) && !ship.isAlive() && noOfLives.size() == 0){
+                    timer.stop();
+                    AsteroidsGame game = AsteroidsGame.getInstance();
+                    game.showHighScores();
+                }
 
                 if (pressedKeys.getOrDefault(KeyCode.ENTER, false) && !ship.isAlive() && noOfLives.size() != 0) {
                     ship.ship.getPolygon().setTranslateX(600);
@@ -506,7 +502,6 @@ public class GameLogic
         root.getChildren().add(ship.getPolygon());
         asteroidList.forEach(asteroid -> root.getChildren().add(asteroid.getPolygon()));
         timer.start();
-//        mainStage.show();
     return mainScene;
     }
 
