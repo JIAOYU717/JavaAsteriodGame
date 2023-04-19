@@ -4,33 +4,23 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 
 public class AsteroidsGame extends Application {
     static Stage primaryStage;
 
-    private static AsteroidsGame instance = new AsteroidsGame();
+    private static final AsteroidsGame instance = new AsteroidsGame();
 
     protected static AsteroidsGame getInstance() {return instance;}
     final Scene menuScene = new Scene(new VBox(), 1280, 832);
@@ -38,7 +28,7 @@ public class AsteroidsGame extends Application {
     final Scene enterNameScene = new Scene(new VBox(), 1280, 832);
     private TextField playerNameField;
 
-    private GameLogic gameLoop = new GameLogic();
+    private final GameLogic gameLoop = new GameLogic();
 
 
     public static void main(String[] args) {
@@ -47,7 +37,7 @@ public class AsteroidsGame extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        AsteroidsGame.primaryStage = primaryStage;
         primaryStage.setTitle("Asteroids");
         showMainMenu();
     }
@@ -98,14 +88,24 @@ public class AsteroidsGame extends Application {
         controlsLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 48));
         controlsLabel.setTextFill(Color.WHITE);
 
-        Label controlsText = new Label("The aim of the game is to avoid Asteroids and survive as long " +
-                "as possible in a series of increasingly difficult levels!\n\n" +
-                "LEFT ARROW KEY: Press the left arrow key to rotate the ship anti-clockwise.\n\n" +
-                "RIGHT ARROW KEY: Press the right arrow key to rotate the ship clockwise.\n\n" +
-                "UP ARROW KEY: Press the up arrow key to apply thrust and move forward.\n\n" +
-                "SPACE: Press the space bar to shoot at enemies.\n\n" +
-                "C KEY: Press the C key to perform a hyperjump, which randomly teleports you and provides brief immunity.\n\n" +
-                "L KEY: Press the L key to spend 10,000 points and replenish a life.\n\n\n\n");
+        Label controlsText = new Label("""
+                The aim of the game is to avoid Asteroids and survive as long as possible in a series of increasingly difficult levels!
+
+                LEFT ARROW KEY: Press the left arrow key to rotate the ship anti-clockwise.
+
+                RIGHT ARROW KEY: Press the right arrow key to rotate the ship clockwise.
+
+                UP ARROW KEY: Press the up arrow key to apply thrust and move forward.
+
+                SPACE: Press the space bar to shoot at enemies.
+
+                C KEY: Press the C key to perform a hyperjump, which randomly teleports you and provides brief immunity.
+
+                L KEY: Press the L key to spend 10,000 points and replenish a life.
+
+
+
+                """);
         controlsText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         controlsText.setTextFill(Color.WHITE);
 
@@ -137,7 +137,7 @@ public class AsteroidsGame extends Application {
 
     void showHighScores() {
 
-        List<String> highScores = readHighScores("high_scores.txt");
+        List<String> highScores = readHighScores();
 
         VBox highScoresLayout = new VBox(10);
         highScoresLayout.setAlignment(Pos.CENTER);
@@ -156,9 +156,7 @@ public class AsteroidsGame extends Application {
         }
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(event -> {
-            showMainMenu();
-        });
+        backButton.setOnAction(event -> showMainMenu());
 
         highScoresLayout.getChildren().add(backButton);
 
@@ -166,9 +164,9 @@ public class AsteroidsGame extends Application {
         primaryStage.setScene(highScoresScene);
         primaryStage.setTitle("High Scores");
     }
-    private List<String> readHighScores(String fileName) {
+    private List<String> readHighScores() {
         List<String> highScores = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/" + fileName))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/" + "high_scores.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 highScores.add(line);

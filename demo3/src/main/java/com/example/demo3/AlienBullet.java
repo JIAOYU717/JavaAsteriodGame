@@ -2,7 +2,6 @@ package com.example.demo3;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Shape;
 
 public class AlienBullet extends Polygons{
 
@@ -23,22 +22,21 @@ public class AlienBullet extends Polygons{
         this.alienBullet.applyAcceleration(acc);
     }
 
-    public void rotLeft(){
-        this.alienBullet.rotLeft();
+    public void rotLeft(){ this.alienBullet.rotLeft();
     }
 
-    public void rotRight(){
-        this.alienBullet.rotRight();
+    public void rotRight(){ this.alienBullet.rotRight();
     }
 
     public void applyMove(int ScreenWidth, int ScreenHeight){
         this.alienBullet.applyMove(ScreenWidth, ScreenHeight);
     }
 
-    public boolean collision(Polygons other){
-        //getBoundsInLocal gives the bounds of a node in its own coordinate system
-        Shape collisionArea = Shape.intersect(this.alienBullet.getPolygon(), other.getPolygon());
-        return collisionArea.getBoundsInLocal().getWidth() != -1;
-    }
+
+//    public boolean collision(Polygons other){
+//        //getBoundsInLocal gives the bounds of a node in its own coordinate system
+//        Shape collisionArea = Shape.intersect(this.alienBullet.getPolygon(), other.getPolygon());
+//        return collisionArea.getBoundsInLocal().getWidth() != -1;
+//    }
 
 }

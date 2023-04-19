@@ -15,41 +15,36 @@ public class PolygonsFactory {
 
 
         switch (polygonType) {
-
-            case Player_SHIP:
-                return new PlayerShip(polygonType,x, y);
-
-            case LARGE_ASTEROID:
+            case Player_SHIP -> {
+                return new PlayerShip(polygonType, x, y);
+            }
+            case LARGE_ASTEROID -> {
                 original_x = x;
                 original_y = y;
-                return new AsteroidClass (polygonType,original_x,original_y,large_asteroid_size);
-
-            case MEDIUM_ASTEROID:
+                return new AsteroidClass(polygonType, original_x, original_y, large_asteroid_size);
+            }
+            case MEDIUM_ASTEROID -> {
                 original_x = x;
                 original_y = y;
-
-                Polygons mediumAsteroid = new AsteroidClass (polygonType,original_x,original_y,medium_asteroid_size);
-
-                return mediumAsteroid;
-
-            case SMALL_ASTEROID:
+                return new AsteroidClass(polygonType, original_x, original_y, medium_asteroid_size);
+            }
+            case SMALL_ASTEROID -> {
                 original_x = x;
                 original_y = y;
-
-                return new AsteroidClass (polygonType,original_x,original_y,small_asteroid_size);
-
-            case ALIEN_SHIP:
+                return new AsteroidClass(polygonType, original_x, original_y, small_asteroid_size);
+            }
+            case ALIEN_SHIP -> {
                 original_x = x;
                 original_y = y;
-                return new AlienShip(polygonType,original_x,original_y,alien_ship_size);
-
-            case BULLET:
-                return new Bullet(polygonType,x,y);
-            case ALIEN_BULLET:
-                return new AlienBullet(polygonType,x,y);
-
-            default:
-                throw new IllegalArgumentException("Invalid entity type: " + polygonType);
+                return new AlienShip(polygonType, original_x, original_y, alien_ship_size);
+            }
+            case BULLET -> {
+                return new Bullet(polygonType, x, y);
+            }
+            case ALIEN_BULLET -> {
+                return new AlienBullet(polygonType, x, y);
+            }
+            default -> throw new IllegalArgumentException("Invalid entity type: " + polygonType);
         }
     }
 }

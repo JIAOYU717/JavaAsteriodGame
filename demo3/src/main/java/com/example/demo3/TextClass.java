@@ -2,15 +2,15 @@ package com.example.demo3;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
+//import javafx.scene.text.FontPosture;
+//import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class TextClass extends Text {
     int x;
     int y;
     int size;
-    public Text mytext = new Text();
+    protected Text mytext = new Text();
     public TextClass(String textString, int x, int y, Color fillColor, int size){
         this.x = x;
         this.y = y;
@@ -22,7 +22,7 @@ public class TextClass extends Text {
         this.mytext.setFont(new Font(size));
     }
 
-    public void SetText(String newTextString) {
+    protected void SetText(String newTextString) {
         this.mytext.setText(newTextString);
     }
 }
