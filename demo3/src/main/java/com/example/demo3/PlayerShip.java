@@ -15,8 +15,8 @@ public class PlayerShip extends Polygons{
     boolean immune = false;
     boolean alive = true;
 
-    public PlayerShip(PolygonType polygonType, double x, double y){
-        this.ship = new Polygons(polygonType, this.shipPoints, Color.GREEN, Color.YELLOW, 1,  x, y);
+    public PlayerShip(PolygonType polygonType, double s, double x, double y){
+        this.ship = new Polygons(polygonType, this.shipPoints, Color.GREEN, Color.YELLOW, s,  x, y);
         this.ship.setRadius(10);
         this.ship.getPolygon().setOpacity(1);
 

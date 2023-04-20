@@ -83,7 +83,7 @@ public class AsteroidsGame extends Application {
         VBox menuLayout = new VBox(40);
         menuLayout.getChildren().addAll(title, startButton, controlsButton, highScoresButton, exitButton);
         menuLayout.setAlignment(Pos.CENTER);
-        menuLayout.setStyle("-fx-background-color: #000000;");
+        menuLayout.setStyle("-fx-background-color: #070020;");
 
         menuScene.setRoot(menuLayout);
         primaryStage.setScene(menuScene);
@@ -138,7 +138,7 @@ public class AsteroidsGame extends Application {
         VBox controlsLayout = new VBox(20);
         controlsLayout.getChildren().addAll(controlsLabel, controlsText, buttonLayout);
         controlsLayout.setAlignment(Pos.CENTER);
-        controlsLayout.setStyle("-fx-background-color: #000000;");
+        controlsLayout.setStyle("-fx-background-color: #070020;");
 
         Scene controlsScene = new Scene(controlsLayout, 1280, 832);
         primaryStage.setScene(controlsScene);
@@ -151,7 +151,7 @@ public class AsteroidsGame extends Application {
 
         VBox highScoresLayout = new VBox(30);
         highScoresLayout.setAlignment(Pos.CENTER);
-        highScoresLayout.setStyle("-fx-background-color: #000000;");
+        highScoresLayout.setStyle("-fx-background-color: #070020;");
 
 
         Label highScoresTitle = new Label("High Scores");
@@ -213,7 +213,7 @@ public class AsteroidsGame extends Application {
         VBox enterNameLayout = new VBox(30);
         enterNameLayout.getChildren().addAll(enterNameLabel, playerNameField, submitButton);
         enterNameLayout.setAlignment(Pos.CENTER);
-        enterNameLayout.setStyle("-fx-background-color: #000000;");
+        enterNameLayout.setStyle("-fx-background-color: #070020;");
 
         enterNameScene.setRoot (enterNameLayout);
         primaryStage.setScene(enterNameScene);

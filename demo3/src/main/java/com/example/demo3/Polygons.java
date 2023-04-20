@@ -16,7 +16,6 @@ public class Polygons extends javafx.scene.shape.Polygon {
         ALIEN_BULLET
     }
 
-//    public boolean alive;
     protected PolygonType polygonType;
 
     protected double rotation;

@@ -16,7 +16,7 @@ public class PolygonsFactory {
 
         switch (polygonType) {
             case Player_SHIP -> {
-                return new PlayerShip(polygonType, x, y);
+                return new PlayerShip(polygonType, 1, x, y);
             }
             case LARGE_ASTEROID -> {
                 original_x = x;

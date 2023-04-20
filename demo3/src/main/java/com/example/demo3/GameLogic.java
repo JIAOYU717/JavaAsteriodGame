@@ -102,6 +102,7 @@ public class GameLogic
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
             alienShip.applyAcceleration(1);
+            alienShip.applyMove(1280, 832);
         } else if(spawnSide == 2){
             positionx = randomx.nextInt(1280);
             positiony = randomy.nextInt(60) + 832;
@@ -109,6 +110,7 @@ public class GameLogic
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
             alienShip.applyAcceleration(1);
+            alienShip.applyMove(1280, 832);
         } else if(spawnSide == 3){
             positionx = randomx.nextInt(60) + 1280;
             positiony = randomy.nextInt(832);
@@ -116,6 +118,7 @@ public class GameLogic
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
             alienShip.applyAcceleration(1);
+            alienShip.applyMove(1280, 832);
         } else {
             positionx = randomx.nextInt(1280);
             positiony = randomy.nextInt(60) - 60;
@@ -123,6 +126,7 @@ public class GameLogic
             double asteroidAngle = randomx.nextDouble() * 360;
             alienShip.alienship.setRotation(asteroidAngle);
             alienShip.applyAcceleration(1);
+            alienShip.applyMove(1280, 832);
 
         }
         return alienShip;
@@ -133,7 +137,7 @@ public class GameLogic
     public void start(Stage mainStage)
     {
         root = new Group();
-        this.mainScene = new Scene(root, 1280, 832, Color.BLACK); //a drawing surface
+        this.mainScene = new Scene(root, 1280, 832, Color.web("#070020")); //a drawing surface
         mainStage.setScene(mainScene);
 
         //Make player ship that is controllable by the player
@@ -144,9 +148,9 @@ public class GameLogic
         asteroidList.add(asteroids);
 
 
-        alien = createAlienShip();
+//        alien = createAlienShip();
         alienShipList = new ArrayList<>();
-        alienShipList.add(alien);
+//        alienShipList.add(alien);
 
         alienBulletList = new ArrayList<>();
 
@@ -154,7 +158,7 @@ public class GameLogic
 
         noOfLives = new ArrayList<>();
         for (int i = 0; i < 3; i++){
-            life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 900 + 50 * i, 40);
+            life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 0.8, 950 + 30 * i, 40);
             life.ship.setRotation(-90);
             noOfLives.add(life);
             root.getChildren().add(life.getPolygon());
@@ -174,7 +178,7 @@ public class GameLogic
             pressedKeys.put(event.getCode(), Boolean.FALSE);
         });
 
-        TextClass noOfAsteroids = new TextClass("No. of asteroids:", 30, 80, Color.WHITE, 30);
+        TextClass noOfAsteroids = new TextClass("No. of asteroids:", 30, 750, Color.WHITE, 30);
         root.getChildren().add(noOfAsteroids.mytext);
 
         TextClass youDiedText = new TextClass("YOU DIED", 575, 380, Color.WHITE, 40);
@@ -182,13 +186,10 @@ public class GameLogic
 
         AtomicInteger score = new AtomicInteger(0);
 
-        TextClass scoreText = new TextClass("Score: " + score, 30, 40, Color.WHITE, 40);
+        TextClass scoreText = new TextClass("Score: " + score, 30, 50, Color.WHITE, 40);
         root.getChildren().add(scoreText.mytext);
 
-        TextClass debugText = new TextClass("" , 400, 50, Color.YELLOW, 40);
-        root.getChildren().add(debugText.mytext);
-
-        TextClass level = new TextClass("Level 1", 1100, 50, Color.WHITE, 30);
+        TextClass level = new TextClass("Level 1", 1100, 50, Color.WHITE, 40);
 
         AtomicInteger gameLevel = new AtomicInteger(1);
         root.getChildren().add(level.mytext);
@@ -197,13 +198,15 @@ public class GameLogic
         gameOver.mytext.setOpacity(0);
         root.getChildren().add(gameOver.mytext);
 
-        TextClass noOfHyperjumps = new TextClass("Hyper jump available!", 850, 90, Color.WHITE, 20);
+        TextClass noOfHyperjumps = new TextClass("Hyper jump available!", 1050, 750, Color.WHITE, 20);
         noOfHyperjumps.mytext.setOpacity(0);
         root.getChildren().add(noOfHyperjumps.mytext);
 
         AtomicBoolean replenishedLife = new AtomicBoolean(false);
 
         AtomicBoolean immunity = new AtomicBoolean(false);
+
+        AtomicBoolean alienSpawned = new AtomicBoolean(false);
 
 
         timer = new AnimationTimer() {
@@ -220,11 +223,12 @@ public class GameLogic
                     noOfHyperjumps.mytext.setOpacity(1);
                 } else {noOfHyperjumps.mytext.setOpacity(0);}
 
-                if (asteroidList.isEmpty()
-                        && alienShipList.isEmpty()
-                ){
-                    gameLevel.set(gameLevel.get() + 1);
 
+
+                if (asteroidList.isEmpty() && alienShipList.isEmpty())
+                {
+                    gameLevel.set(gameLevel.get() + 1);
+                    alienSpawned.set(false);
                     didHyperJump.set(false);
                     replenishedLife.set(false);
 
@@ -232,28 +236,27 @@ public class GameLogic
                     {   asteroids = createLargeAsteroid();
                         asteroidList.add(asteroids);
                     }
-
-                    alien = createAlienShip();
-                    alienShipList.add(alien);
-                    alienremoved = false;
-                    alienAppearFlag = 0;
-
-
                     asteroidList.forEach(asteroid -> {
                         asteroid.applyMove(1280, 832);
                         root.getChildren().add(asteroid.getPolygon());
                     });
                 }
 
-                Timeline alienShipShow = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                    if (!root.getChildren().contains(alien.getPolygon()) && alienAppearFlag==0 && !alienremoved ){
-                        root.getChildren().add(alien.getPolygon());
-                        alienAppearFlag = 1;
-                    }
-                }));
-                alienShipShow.play();
+                if (asteroidList.size() == 1){
+                    for (AsteroidClass asteroid : asteroidList) {
+                        if (asteroid.asteroid.scale == 0.5 && !alienSpawned.get()) {
 
-                if (alienAppearFlag==1 && alien.getAlive() && !alienremoved && System.currentTimeMillis()-AlienBullettime > 2000 ){
+                            alien = createAlienShip();
+                            alien.applyAcceleration(gameLevel.get());
+                            alienShipList.add(alien);
+                            alienremoved = false;
+                            alienAppearFlag = 0;
+                            alienSpawned.set(true);
+                            root.getChildren().add(alien.getPolygon());
+                    }
+                }}
+
+                if (alienShipList.size() != 0 && System.currentTimeMillis() - AlienBullettime > 2000 ){
                     AlienBullet alienbullet = (AlienBullet) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_BULLET, alien.getPolygon().getTranslateX(), alien.getPolygon().getTranslateY());
                     if (ship.getPolygon().getTranslateX() < alien.getPolygon().getTranslateX())
                     {   double angle = Math.toDegrees(Math.atan((ship.getPolygon().getTranslateY() - alien.getPolygon().getTranslateY())/
@@ -292,6 +295,7 @@ public class GameLogic
                     timer.stop();
                     AsteroidsGame game = AsteroidsGame.getInstance();
                     game.showHighScores();
+
                 }
 
                 if (pressedKeys.getOrDefault(KeyCode.ENTER, false) && !ship.isAlive() && noOfLives.size() != 0) {
@@ -316,13 +320,13 @@ public class GameLogic
 
                 if (!replenishedLife.get() && pressedKeys.getOrDefault(KeyCode.L, false) && ship.isAlive() && noOfLives.size() < 3 && score.get() >= 10000) {
                     if (noOfLives.size() == 1){
-                        PlayerShip life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 900 + 50, 40);
+                        PlayerShip life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 0.8, 950 + 30, 40);
                         life.ship.setRotation(-90);
                         noOfLives.add(life);
                         root.getChildren().add(life.getPolygon());
                         replenishedLife.set(true);}
                     else {
-                        PlayerShip life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 900 + 50 * 2, 40);
+                        PlayerShip life = new PlayerShip(Polygons.PolygonType.Player_SHIP, 0.8, 950 + 30 * 2, 40);
                         life.ship.setRotation(-90);
                         noOfLives.add(life);
                         root.getChildren().add(life.getPolygon());
@@ -385,6 +389,9 @@ public class GameLogic
                 ship.applyMove(1280,832);
 
                 alienShipList.forEach(alienShip -> {
+                    if(alienShip!=null){
+                        alienShip.applyMove(1280, 832);
+                    }
                     if (!immunity.get()){
                         if(ship.isAlive() && ship.collision(alienShip)){
                             root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
@@ -397,10 +404,6 @@ public class GameLogic
 
                 asteroidList.forEach(asteroid -> {
                     asteroid.applyMove(1280, 832);
-                    if(alien!=null){
-                        alien.applyMove(1280, 832);
-                    }
-
                     alienBulletList.forEach(alienbullet -> {
                         if (!immunity.get() && !(noOfLives.size() == 1) && ship.isAlive() && ship.collision(alienbullet)) {
                             root.getChildren().remove(noOfLives.get(noOfLives.size()-1).getPolygon());
@@ -479,6 +482,7 @@ public class GameLogic
                     bulletList.remove(bullet);
                     root.getChildren().remove(bullet.getPolygon());
                 });
+
 
 
                 List<Bullet> bulletsToRemoveDueToAlienShip = bulletList.stream().filter(bullet -> {

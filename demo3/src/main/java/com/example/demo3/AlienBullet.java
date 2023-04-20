@@ -10,7 +10,7 @@ public class AlienBullet extends Polygons{
     public Polygons alienBullet;
 
     public AlienBullet(PolygonType polygonType,double x, double y){
-        this.alienBullet = new Polygons(polygonType,this.alienBulletPoints, Color.RED, Color.RED, 1, x, y);
+        this.alienBullet = new Polygons(polygonType,this.alienBulletPoints, Color.YELLOW, Color.RED, 1, x, y);
         this.alienBullet.setRadius(2);
     }
 

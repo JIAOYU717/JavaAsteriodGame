@@ -1,3 +1,5 @@
-Mohammad : 12000
-James : 10000
-Subh : 8000
+Mohammad :  12000
+Itgel :     11000
+Alicia:     10500
+James :     10000
+Shubh :      8000

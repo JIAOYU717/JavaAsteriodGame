@@ -1,7 +1,13 @@
 package com.example.demo3;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bullet extends Polygons{
 
@@ -35,6 +41,5 @@ public class Bullet extends Polygons{
     public void applyMove(int ScreenWidth, int ScreenHeight){
         this.bullet.applyMove(ScreenWidth, ScreenHeight);
     }
-
 
 }
