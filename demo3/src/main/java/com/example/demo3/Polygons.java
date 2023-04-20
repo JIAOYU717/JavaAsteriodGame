@@ -1,10 +1,8 @@
 package com.example.demo3;
 
 import javafx.geometry.Point2D;
-//import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-//import javafx.scene.shape.Shape;
 
 public class Polygons extends javafx.scene.shape.Polygon {
 
@@ -25,10 +23,6 @@ public class Polygons extends javafx.scene.shape.Polygon {
     Double[] points;
 
     double scale = 1;
-
-//    protected double velocity = 0;
-//    double dvx = 0;
-//    double dvy = 0;
 
     double radius = 30;
     final Polygon polygon = new Polygon();
@@ -64,15 +58,6 @@ public class Polygons extends javafx.scene.shape.Polygon {
     protected void setRadius(double radius){
         this.radius = radius;
     }
-
-//    public void setPosition(double x, double y){
-//        this.polygon.setTranslateX(x);
-//        this.polygon.setTranslateY(y);
-//    }
-
-//    public void changeOpacity(double opacity){
-//        this.polygon.setOpacity(opacity);
-//    }
 
     protected double getAngle(){
         return polygon.getRotate();
@@ -111,9 +96,6 @@ public class Polygons extends javafx.scene.shape.Polygon {
     protected void applyAcceleration(double da){
         double dx = da*Math.cos(Math.toRadians(this.polygon.getRotate()));
         double dy = da*Math.sin(Math.toRadians(this.polygon.getRotate()));
-//        this.dvx += dx;
-//        this.dvy += dy;
-//        this.velocity = Math.sqrt(dvx*dvx + dvy*dvy);
         this.move =  this.move.add(dx, dy);
     }
 

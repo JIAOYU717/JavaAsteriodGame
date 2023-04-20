@@ -2,8 +2,6 @@ package com.example.demo3;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-//import javafx.scene.text.FontPosture;
-//import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class TextClass extends Text {

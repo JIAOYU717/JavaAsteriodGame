@@ -1,14 +1,11 @@
 package com.example.demo3;
 
-//import javafx.geometry.Point2D;
-//import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-//import javafx.scene.transform.Rotate;
 
 public class PlayerShip extends Polygons{
 
@@ -28,9 +25,6 @@ public class PlayerShip extends Polygons{
     public Polygon getPolygon(){
         return this.ship.getPolygon();
     }
-
-
-//    public void changeOpacity(double opacity){this.ship.getPolygon().setOpacity(opacity);}
 
     public void applyAcceleration(double acc){
         this.ship.applyAcceleration(acc);

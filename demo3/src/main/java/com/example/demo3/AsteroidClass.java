@@ -36,7 +36,7 @@ public class AsteroidClass extends Polygons{
             asteroidPoints[i]=replacement;
 
         }
-        this.asteroid = new Polygons(this.polygonType, this.asteroidPoints, Color.GRAY, Color.TRANSPARENT, s, x, y);
+        this.asteroid = new Polygons(this.polygonType, this.asteroidPoints, Color.GRAY, Color.WHITE, s, x, y);
     }
 
     public Polygon getPolygon(){

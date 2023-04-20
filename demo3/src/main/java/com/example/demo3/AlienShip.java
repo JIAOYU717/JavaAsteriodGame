@@ -4,16 +4,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
-//import javafx.animation.KeyFrame;
-//import javafx.animation.Timeline;
-//import javafx.geometry.Point2D;
-//import javafx.scene.paint.Color;
-//import javafx.scene.shape.Polygon;
-//import javafx.scene.shape.Shape;
-//import javafx.util.Duration;
-//
-//import java.util.Random;
-
 public class AlienShip extends Polygons {
 
     Double[] alienShipPoints = {0.0,0.0,

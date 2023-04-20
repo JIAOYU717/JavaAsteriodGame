@@ -255,9 +255,16 @@ public class GameLogic
 
                 if (alienAppearFlag==1 && alien.getAlive() && !alienremoved && System.currentTimeMillis()-AlienBullettime > 2000 ){
                     AlienBullet alienbullet = (AlienBullet) PolygonsFactory.createEntity(Polygons.PolygonType.ALIEN_BULLET, alien.getPolygon().getTranslateX(), alien.getPolygon().getTranslateY());
-                    double angle = Math.toDegrees(Math.atan((ship.getPolygon().getTranslateY() - alien.getPolygon().getTranslateY())/
+                    if (ship.getPolygon().getTranslateX() < alien.getPolygon().getTranslateX())
+                    {   double angle = Math.toDegrees(Math.atan((ship.getPolygon().getTranslateY() - alien.getPolygon().getTranslateY())/
                             (ship.getPolygon().getTranslateX() - alien.getPolygon().getTranslateX())));
-                    alienbullet.getPolygon().setRotate(angle);
+                        alienbullet.getPolygon().setRotate(angle - 180);} else {
+                        double angle = Math.toDegrees(Math.atan((ship.getPolygon().getTranslateY() - alien.getPolygon().getTranslateY())/
+                                (ship.getPolygon().getTranslateX() - alien.getPolygon().getTranslateX())));
+                        alienbullet.getPolygon().setRotate(angle);
+                    }
+
+
 
                     alienbullet.applyAcceleration(7.0);
                     alienBulletList.add(alienbullet);
@@ -336,13 +343,13 @@ public class GameLogic
                     didHyperJump.set(true);
                     immunity.set(true);
                     ship.setImmune(true);
-                        //player is immune for the first 2 seconds, so that if an asteroid
-                        //spawns close to the player, they can move away quickly
-                        Timeline immune = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
-                                immunity.set(false);
-                                ship.setImmune(false);
-                        }));
-                        immune.play();
+                    //player is immune for the first 2 seconds, so that if an asteroid
+                    //spawns close to the player, they can move away quickly
+                    Timeline immune = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+                        immunity.set(false);
+                        ship.setImmune(false);
+                    }));
+                    immune.play();
                 }
 
 
@@ -417,8 +424,8 @@ public class GameLogic
                             noOfLives.remove(noOfLives.get(noOfLives.size()-1));
                             root.getChildren().remove(ship.getPolygon());
                             ship.alive = false;
-                    }
-                }});
+                        }
+                    }});
                 alienBulletList.forEach(alienbullet -> {
                     alienbullet.applyMove(1280, 832);
                 });
@@ -430,43 +437,43 @@ public class GameLogic
                     List<AsteroidClass> collides = asteroidList.stream().filter(asteroid -> asteroid.collision(bullet))
                             .toList();
 
-                if (collides.isEmpty()) {
-                    return false;
-                }
+                    if (collides.isEmpty()) {
+                        return false;
+                    }
 
-                collides.forEach(collided -> {
-                    asteroidList.remove(collided);
-                    root.getChildren().remove(collided.getPolygon());
+                    collides.forEach(collided -> {
+                        asteroidList.remove(collided);
+                        root.getChildren().remove(collided.getPolygon());
 
-                    if (collided.asteroid.scale == 2.0) {
-                        score.set(score.get() + 500);
-                        scoreText.SetText("Score: " + score);
-                        for (int i = 0; i < 2; i++) {
-                            AsteroidClass mediumAsteroid = new AsteroidClass(Polygons.PolygonType.MEDIUM_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 1);
-                            double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
-                            mediumAsteroid.asteroid.setRotation(asteroidAngle);
-                            mediumAsteroid.applyAcceleration(2);
-                            asteroidList.add(mediumAsteroid);
-                            root.getChildren().add(mediumAsteroid.getPolygon());
-                        }}
+                        if (collided.asteroid.scale == 2.0) {
+                            score.set(score.get() + 500);
+                            scoreText.SetText("Score: " + score);
+                            for (int i = 0; i < 2; i++) {
+                                AsteroidClass mediumAsteroid = new AsteroidClass(Polygons.PolygonType.MEDIUM_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 1);
+                                double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
+                                mediumAsteroid.asteroid.setRotation(asteroidAngle);
+                                mediumAsteroid.applyAcceleration(2);
+                                asteroidList.add(mediumAsteroid);
+                                root.getChildren().add(mediumAsteroid.getPolygon());
+                            }}
 
-                    else if (collided.asteroid.scale == 1.0) {
-                        score.set(score.get() + 750);
-                        scoreText.SetText("Score: " + score);
-                        for (int i = 0; i < 2; i++) {
-                            AsteroidClass smallAsteroid = new AsteroidClass(Polygons.PolygonType.SMALL_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 0.5);
-                            double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
-                            smallAsteroid.asteroid.setRotation(asteroidAngle);
-                            smallAsteroid.applyAcceleration(2);
-                            asteroidList.add(smallAsteroid);
-                            root.getChildren().add(smallAsteroid.getPolygon());
-                        }
+                        else if (collided.asteroid.scale == 1.0) {
+                            score.set(score.get() + 750);
+                            scoreText.SetText("Score: " + score);
+                            for (int i = 0; i < 2; i++) {
+                                AsteroidClass smallAsteroid = new AsteroidClass(Polygons.PolygonType.SMALL_ASTEROID, collided.getPolygon().getTranslateX(), collided.getPolygon().getTranslateY(), 0.5);
+                                double asteroidAngle = collided.asteroid.getAngle() + (-90 * i + 45);
+                                smallAsteroid.asteroid.setRotation(asteroidAngle);
+                                smallAsteroid.applyAcceleration(2);
+                                asteroidList.add(smallAsteroid);
+                                root.getChildren().add(smallAsteroid.getPolygon());
+                            }
                         } else {
                             score.set(score.get() + 1000);
                             scoreText.SetText("Score: " + score);
                         }
-                        });
-                return true;
+                    });
+                    return true;
                 }).toList();
                 bulletsToRemove.forEach(bullet -> {
                     bulletList.remove(bullet);

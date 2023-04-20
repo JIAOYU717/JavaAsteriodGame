@@ -2,9 +2,6 @@ package com.example.demo3;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-//import javafx.scene.shape.Shape;
-
-//import java.util.List;
 
 public class Bullet extends Polygons{
 
@@ -12,7 +9,6 @@ public class Bullet extends Polygons{
 
     public Polygons bullet;
 
-//    private List<Polygons> debrisList;
     public Bullet(PolygonType polygonType, double x, double y){
         this.bullet = new Polygons(polygonType, this.bulletPoints, Color.WHITE, Color.CYAN, 1, x, y);
         this.bullet.setRadius(2);
@@ -40,10 +36,5 @@ public class Bullet extends Polygons{
         this.bullet.applyMove(ScreenWidth, ScreenHeight);
     }
 
-//    public boolean collision(Polygons other){
-//        //getBoundsInLocal gives the bounds of a node in its own coordinate system
-//        Shape collisionArea = Shape.intersect(this.bullet.getPolygon(), other.getPolygon());
-//        return collisionArea.getBoundsInLocal().getWidth() != -1;
-//    }
 
 }

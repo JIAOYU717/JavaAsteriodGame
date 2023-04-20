@@ -33,10 +33,4 @@ public class AlienBullet extends Polygons{
     }
 
 
-//    public boolean collision(Polygons other){
-//        //getBoundsInLocal gives the bounds of a node in its own coordinate system
-//        Shape collisionArea = Shape.intersect(this.alienBullet.getPolygon(), other.getPolygon());
-//        return collisionArea.getBoundsInLocal().getWidth() != -1;
-//    }
-
 }

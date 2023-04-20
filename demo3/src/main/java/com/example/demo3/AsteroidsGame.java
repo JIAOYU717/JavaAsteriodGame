@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
@@ -44,17 +45,24 @@ public class AsteroidsGame extends Application {
 
     private void showMainMenu() {
         Label title = new Label("Asteroids");
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 42));
-        title.setTextFill(Color.web("#ffffff"));
+        title.setFont(Font.font("Arial", FontWeight.BOLD, FontPosture.ITALIC, 90));
+        title.setTextFill(Color.YELLOW);
 
         Button startButton = new Button("Start");
-        startButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        startButton.setFont(Font.font("Arial", FontWeight.BOLD, 38));
+        startButton.setStyle("-fx-background-color: black; -fx-text-fill: white; -fx-border-color: yellow;");
+
         Button highScoresButton = new Button("High Scores");
-        highScoresButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        highScoresButton.setFont(Font.font("Arial", FontWeight.BOLD, 38));
+        highScoresButton.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-border-color: yellow;");
+
         Button exitButton = new Button("Exit");
-        exitButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        exitButton.setFont(Font.font("Arial", FontWeight.BOLD, 38));
+        exitButton.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-border-color: yellow;");
+
         Button controlsButton = new Button("Controls");
-        controlsButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        controlsButton.setFont(Font.font("Arial", FontWeight.BOLD, 38));
+        controlsButton.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-border-color: yellow;");
 
         startButton.setOnAction(event -> {
             showEnterNameScreen();
@@ -72,7 +80,7 @@ public class AsteroidsGame extends Application {
             primaryStage.close();
         });
 
-        VBox menuLayout = new VBox(10);
+        VBox menuLayout = new VBox(40);
         menuLayout.getChildren().addAll(title, startButton, controlsButton, highScoresButton, exitButton);
         menuLayout.setAlignment(Pos.CENTER);
         menuLayout.setStyle("-fx-background-color: #000000;");
@@ -110,22 +118,24 @@ public class AsteroidsGame extends Application {
         controlsText.setTextFill(Color.WHITE);
 
         Button startButton = new Button("Start Game");
-        startButton.setFont(Font.font("Arial", FontWeight.BOLD, 26));
+        startButton.setFont(Font.font("Arial", FontWeight.BOLD, 38));
+        startButton.setStyle("-fx-background-color: black; -fx-text-fill: yellow;");
         startButton.setOnAction(event -> {
             showEnterNameScreen();
         });
 
         Button backButton = new Button("Back to Main Menu");
         backButton.setFont(Font.font("Arial", FontWeight.BOLD, 26));
+        backButton.setStyle("-fx-background-color: black; -fx-text-fill: yellow;");
         backButton.setOnAction(event -> {
             showMainMenu();
         });
 
-        VBox buttonLayout = new VBox(20);
+        VBox buttonLayout = new VBox(30);
         buttonLayout.getChildren().addAll(startButton, backButton);
         buttonLayout.setAlignment(Pos.CENTER);
 
-        VBox controlsLayout = new VBox(10);
+        VBox controlsLayout = new VBox(20);
         controlsLayout.getChildren().addAll(controlsLabel, controlsText, buttonLayout);
         controlsLayout.setAlignment(Pos.CENTER);
         controlsLayout.setStyle("-fx-background-color: #000000;");
@@ -139,23 +149,27 @@ public class AsteroidsGame extends Application {
 
         List<String> highScores = readHighScores();
 
-        VBox highScoresLayout = new VBox(10);
+        VBox highScoresLayout = new VBox(30);
         highScoresLayout.setAlignment(Pos.CENTER);
         highScoresLayout.setStyle("-fx-background-color: #000000;");
 
+
         Label highScoresTitle = new Label("High Scores");
-        highScoresTitle.setFont(Font.font("Arial", FontWeight.BOLD, 24));
-        highScoresTitle.setTextFill(Color.web("#ffffff"));
+        highScoresTitle.setFont(Font.font("Arial", FontWeight.BOLD, 38));
+        highScoresTitle.setTextFill(Color.WHITE);
 
         highScoresLayout.getChildren().add(highScoresTitle);
 
         for (String score : highScores) {
             Label scoreLabel = new Label(score);
-            scoreLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 18));
+            scoreLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 30));
+            scoreLabel.setTextFill(Color.WHITE);
             highScoresLayout.getChildren().add(scoreLabel);
         }
 
         Button backButton = new Button("Back");
+        backButton.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-border-color: yellow;");
+        backButton.setFont(Font.font("Arial", FontWeight.BOLD, 38));
         backButton.setOnAction(event -> showMainMenu());
 
         highScoresLayout.getChildren().add(backButton);
@@ -186,7 +200,8 @@ public class AsteroidsGame extends Application {
         playerNameField.setMaxWidth(240);
 
         Button submitButton = new Button("Submit");
-        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        submitButton.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-border-color: yellow;");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 38));
         submitButton.setOnAction(event -> {
             // Save player's name
             String playerName = playerNameField.getText().trim();
@@ -195,7 +210,7 @@ public class AsteroidsGame extends Application {
             }
         });
 
-        VBox enterNameLayout = new VBox(10);
+        VBox enterNameLayout = new VBox(30);
         enterNameLayout.getChildren().addAll(enterNameLabel, playerNameField, submitButton);
         enterNameLayout.setAlignment(Pos.CENTER);
         enterNameLayout.setStyle("-fx-background-color: #000000;");
